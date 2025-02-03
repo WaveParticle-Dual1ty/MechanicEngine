@@ -3,6 +3,7 @@ set(TARGET_NAME Third_imgui)
 include(${PROJ_DIR}/CMake/DependVulkan.cmake)
 
 set(IMGUI_SRC_DIR ${PROJ_THIRDPARTY_DIR}/imgui)
+set(GLFW_SRC_DIR "${PROJ_THIRDPARTY_DIR}/glfw-3.4")
 
 set(IMGUI_COMMON_SOURCES
     ${IMGUI_SRC_DIR}/imconfig.h
@@ -37,7 +38,7 @@ endif()
 
 add_library(${TARGET_NAME} STATIC ${IMGUI_SOURCES})
 target_include_directories(${TARGET_NAME} PUBLIC
-    ${PROJ_THIRDPARTY_DIR}/glfw/include
+    ${GLFW_SRC_DIR}/include
     ${IMGUI_SRC_DIR}
     ${VULKAN_INCLUDE_DIR}
 )
