@@ -30,14 +30,14 @@ elseif(APPLE)
     set(VULKAN_LIB_DIR ${VULKAN_PATH}/lib)
     set(VULKAN_BIN_DIR ${VULKAN_PATH}/bin)
     set(VULKAN_LIBS_DEBUG
-        ${VULKAN_LIB_DIR}/libvulkan.dylib
-        ${VULKAN_LIB_DIR}/libshaderc_shared.dylib
+        ${VULKAN_LIB_DIR}/libvulkan.1.dylib
+        ${VULKAN_LIB_DIR}/libshaderc_shared.1.dylib
         ${VULKAN_LIB_DIR}/libspirv-cross-core.a
         ${VULKAN_LIB_DIR}/libspirv-cross-glsl.a
     )
     set(VULKAN_LIBS_RELEASE
-        ${VULKAN_LIB_DIR}/libvulkan.dylib
-        ${VULKAN_LIB_DIR}/libshaderc_shared.dylib
+        ${VULKAN_LIB_DIR}/libvulkan.1.dylib
+        ${VULKAN_LIB_DIR}/libshaderc_shared.1.dylib
         ${VULKAN_LIB_DIR}/libspirv-cross-core.a
         ${VULKAN_LIB_DIR}/libspirv-cross-glsl.a
     )
