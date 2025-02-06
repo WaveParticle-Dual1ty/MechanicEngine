@@ -17,7 +17,6 @@
 #include "ThirdParty/glfw-3.4/include/GLFW/glfw3.h"
 
 #include "MechanicEngine/Include/Core/Ptr.h"
-#include "VulkanRHIResources.h"
 #include "VulkanRHITexture.h"
 #include "VulkanRHICommandBuffer.h"
 

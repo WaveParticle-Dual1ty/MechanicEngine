@@ -51,13 +51,4 @@ struct RHIScissor
     uint32_t Height = 0;
 };
 
-struct RHISamplerCreateInfo
-{
-};
-
-struct RHISampler
-{
-    virtual ~RHISampler() = default;
-};
-
 }  //namespace ME

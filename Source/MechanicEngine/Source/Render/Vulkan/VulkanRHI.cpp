@@ -14,6 +14,7 @@
 #include "VulkanRHIPipeline.h"
 #include "VulkanRHIShaders.h"
 #include "VulkanRHIRenderPass.h"
+#include "VulkanRHISampler.h"
 #include "VulkanWrapper.h"
 
 namespace ME

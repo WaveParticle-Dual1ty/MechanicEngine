@@ -5,6 +5,7 @@
 #include "RHIEnums.h"
 #include "RHITexture.h"
 #include "RHIResources.h"
+#include "RHISampler.h"
 
 namespace ME
 {

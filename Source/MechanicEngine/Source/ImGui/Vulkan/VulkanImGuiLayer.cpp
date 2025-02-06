@@ -4,7 +4,6 @@
 #include "ThirdParty/imgui/backends/imgui_impl_vulkan.h"
 #include "ThirdParty/glfw-3.4/include/GLFW/glfw3.h"
 #include "MechanicEngine/Source/Render/Vulkan/VulkanRHI.h"
-#include "MechanicEngine/Source/Render/Vulkan/VulkanRHIResources.h"
 #include "MechanicEngine/Source/Render/Vulkan/VulkanRHIRenderPass.h"
 #include "../ImGuiLog.h"
 
