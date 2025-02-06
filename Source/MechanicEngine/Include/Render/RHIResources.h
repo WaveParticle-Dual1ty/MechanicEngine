@@ -7,11 +7,6 @@
 
 namespace ME
 {
-struct RHICommandBuffer
-{
-    virtual ~RHICommandBuffer() = default;
-};
-
 struct RHIViewport
 {
     float X = 0;

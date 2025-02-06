@@ -11,6 +11,7 @@
 #include "RHIPipeline.h"
 #include "RHIShaders.h"
 #include "RHIRenderPass.h"
+#include "RHICommandBuffer.h"
 
 namespace ME
 {

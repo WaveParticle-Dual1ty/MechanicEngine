@@ -19,6 +19,7 @@
 #include "MechanicEngine/Include/Core/Ptr.h"
 #include "VulkanRHIResources.h"
 #include "VulkanRHITexture.h"
+#include "VulkanRHICommandBuffer.h"
 
 namespace ME
 {
