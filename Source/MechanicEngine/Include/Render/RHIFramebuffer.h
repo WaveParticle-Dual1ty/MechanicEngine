@@ -5,6 +5,7 @@
 #include "RHIPixelFormat.h"
 #include "RHIResources.h"
 #include "RHITexture.h"
+#include "RHIRenderPass.h"
 
 namespace ME
 {

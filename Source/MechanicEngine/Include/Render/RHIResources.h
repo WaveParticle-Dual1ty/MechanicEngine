@@ -12,16 +12,6 @@ struct RHICommandBuffer
     virtual ~RHICommandBuffer() = default;
 };
 
-struct RHIRenderPassCreateDesc
-{
-    ERHIPixelFormat PixelFormat = ERHIPixelFormat::PF_Unknown;
-};
-
-struct RHIRenderPass
-{
-    virtual ~RHIRenderPass() = default;
-};
-
 struct RHIViewport
 {
     float X = 0;

@@ -10,6 +10,7 @@
 #include "RHIDescriptorSet.h"
 #include "RHIPipeline.h"
 #include "RHIShaders.h"
+#include "RHIRenderPass.h"
 
 namespace ME
 {

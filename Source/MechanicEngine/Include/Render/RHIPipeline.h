@@ -3,6 +3,7 @@
 #include "RHIResources.h"
 #include "RHIDescriptorSet.h"
 #include "RHIShaders.h"
+#include "RHIRenderPass.h"
 
 namespace ME
 {

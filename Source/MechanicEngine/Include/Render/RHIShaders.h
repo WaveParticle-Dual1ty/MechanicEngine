@@ -4,9 +4,9 @@
 
 namespace ME
 {
-enum class ERHIShaderType
+enum class ERHIShaderType : uint32_t
 {
-    Vertex,
+    Vertex = 0,
     Pixel,
 };
 

@@ -9,11 +9,6 @@ struct VulkanRHICommandBuffer : RHICommandBuffer
     VkCommandBuffer CommandBuffer = VK_NULL_HANDLE;
 };
 
-struct VulkanRHIRenderPass : RHIRenderPass
-{
-    VkRenderPass RenderPass = VK_NULL_HANDLE;
-};
-
 struct VulkanRHISampler : public RHISampler
 {
     VkSampler Sampler = VK_NULL_HANDLE;
