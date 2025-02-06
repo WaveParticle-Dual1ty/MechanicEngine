@@ -19,11 +19,4 @@ struct VulkanRHIShader : RHIShader
     VkShaderModule ShaderModule = VK_NULL_HANDLE;
 };
 
-struct VulkanRHIGraphicPipeline : public RHIGraphicPipeline
-{
-    VkPipeline Pipeline = VK_NULL_HANDLE;
-    VkPipelineLayout PipelineLayout = VK_NULL_HANDLE;
-    std::vector<VkDescriptorSet> DescriptorSet;
-};
-
 }  //namespace ME

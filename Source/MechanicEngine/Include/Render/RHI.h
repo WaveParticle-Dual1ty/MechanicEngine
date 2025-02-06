@@ -8,6 +8,7 @@
 #include "RHIFramebuffer.h"
 #include "RHIBuffer.h"
 #include "RHIDescriptorSet.h"
+#include "RHIPipeline.h"
 
 namespace ME
 {

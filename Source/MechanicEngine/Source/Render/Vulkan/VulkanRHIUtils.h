@@ -7,6 +7,7 @@
 #include "MechanicEngine/Include/Render/RHIResources.h"
 #include "MechanicEngine/Include/Render/RHIBuffer.h"
 #include "MechanicEngine/Include/Render/RHITexture.h"
+#include "MechanicEngine/Include/Render/RHIPipeline.h"
 
 namespace ME
 {

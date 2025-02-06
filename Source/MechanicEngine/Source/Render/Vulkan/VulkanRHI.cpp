@@ -11,6 +11,7 @@
 #include "VulkanRHIFramebuffer.h"
 #include "VulkanRHIBuffer.h"
 #include "VulkanRHIDescriptorSet.h"
+#include "VulkanRHIPipeline.h"
 #include "VulkanWrapper.h"
 
 namespace ME
