@@ -1861,8 +1861,10 @@ bool VulkanRHI::CreateSwapchainResources(
 
 VkDescriptorPool VulkanRHI::CreateDescriptorPool(VkDevice device)
 {
-    std::array<VkDescriptorPoolSize, 1> poolSizes = {
-        {VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 10}
+    std::array<VkDescriptorPoolSize, 3> poolSizes = {
+        VkDescriptorPoolSize{VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 10},
+        VkDescriptorPoolSize{               VK_DESCRIPTOR_TYPE_SAMPLER, 10},
+        VkDescriptorPoolSize{         VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE, 10}
     };
 
     VkDescriptorPoolCreateInfo descriptorPoolCreateInfo;
