@@ -55,6 +55,7 @@ struct RHIWriteDescriptorSet
     uint32_t DstBinding = 0;
     uint32_t DstArrayElement = 0;
     Ref<RHITexture2D> Texture;
+    Ref<RHISampler> Sampler;
 
     RHIWriteDescriptorSet() = default;
 
@@ -67,6 +68,18 @@ struct RHIWriteDescriptorSet
         , DstBinding(dstBinding)
         , DstArrayElement(dstArrayElement)
         , Texture(texture)
+    {
+    }
+
+    RHIWriteDescriptorSet(
+        ERHIDescriptorType descriptorType,
+        uint32_t dstBinding,
+        uint32_t dstArrayElement,
+        Ref<RHISampler> sampler)
+        : DescriptorType(descriptorType)
+        , DstBinding(dstBinding)
+        , DstArrayElement(dstArrayElement)
+        , Sampler(sampler)
     {
     }
 };

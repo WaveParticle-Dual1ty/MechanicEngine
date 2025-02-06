@@ -22,6 +22,9 @@ public:
     void SetColor(std::array<float, 4> color);
 
 private:
+    bool CreateGraphicPipelineAndResources();
+
+private:
     struct Vertex
     {
         std::array<float, 4> Position = {0, 0, 0, 0};
@@ -45,6 +48,7 @@ private:
     void* m_TargetImTextureID = nullptr;
     std::array<float, 4> m_ClearColor = {0, 0, 0, 1};
 
+    Ref<RHISampler> m_Sampler;
     Ref<RHIShader> m_VertexShader;
     Ref<RHIShader> m_PixelShader;
     Ref<RHIDescriptorSet> m_DescriptorSet;

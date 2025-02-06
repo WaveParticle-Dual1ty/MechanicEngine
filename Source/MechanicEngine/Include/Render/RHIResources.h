@@ -4,7 +4,6 @@
 #include "MechanicEngine/Include/Core/Ptr.h"
 #include "RHIPixelFormat.h"
 #include "RHITexture.h"
-#include "RHIDescriptorSet.h"
 
 namespace ME
 {

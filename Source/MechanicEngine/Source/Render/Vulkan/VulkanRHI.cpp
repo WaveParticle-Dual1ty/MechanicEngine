@@ -899,6 +899,52 @@ void VulkanRHI::UpdateDescriptorSets(
 
             writeDescSets[i] = writeDescSet;
         }
+        else if (rhiSet.DescriptorType == ERHIDescriptorType::RHI_DESCRIPTOR_TYPE_SAMPLER)
+        {
+            Ref<VulkanRHISampler> sampler = std::dynamic_pointer_cast<VulkanRHISampler>(rhiSet.Sampler);
+
+            VkDescriptorImageInfo descImageInfo = {};
+            descImageInfo.sampler = sampler->Sampler;
+            descImageInfo.imageView = nullptr;
+            descImageInfo.imageLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+
+            VkWriteDescriptorSet writeDescSet = {};
+            writeDescSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+            writeDescSet.pNext = VK_NULL_HANDLE;
+            writeDescSet.dstSet = dstSet;
+            writeDescSet.dstBinding = rhiSet.DstBinding;
+            writeDescSet.dstArrayElement = rhiSet.DstArrayElement;
+            writeDescSet.descriptorCount = 1;
+            writeDescSet.descriptorType = VK_DESCRIPTOR_TYPE_SAMPLER;
+            writeDescSet.pImageInfo = &descImageInfo;
+            writeDescSet.pBufferInfo = nullptr;
+            writeDescSet.pTexelBufferView = nullptr;
+
+            writeDescSets[i] = writeDescSet;
+        }
+        else if (rhiSet.DescriptorType == ERHIDescriptorType::RHI_DESCRIPTOR_TYPE_SAMPLED_IMAGE)
+        {
+            Ref<VulkanRHITexture2D> texture = std::dynamic_pointer_cast<VulkanRHITexture2D>(rhiSet.Texture);
+
+            VkDescriptorImageInfo descImageInfo = {};
+            descImageInfo.sampler = VK_NULL_HANDLE;
+            descImageInfo.imageView = texture->m_ImageView;
+            descImageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+
+            VkWriteDescriptorSet writeDescSet = {};
+            writeDescSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+            writeDescSet.pNext = nullptr;
+            writeDescSet.dstSet = dstSet;
+            writeDescSet.dstBinding = rhiSet.DstBinding;
+            writeDescSet.dstArrayElement = rhiSet.DstArrayElement;
+            writeDescSet.descriptorCount = 1;
+            writeDescSet.descriptorType = VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE;
+            writeDescSet.pImageInfo = &descImageInfo;
+            writeDescSet.pBufferInfo = nullptr;
+            writeDescSet.pTexelBufferView = nullptr;
+
+            writeDescSets[i] = writeDescSet;
+        }
         else
         {
             ME_ASSERT(false, "Not support update ERHIDescriptorType now");

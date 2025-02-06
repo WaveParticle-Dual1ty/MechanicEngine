@@ -48,9 +48,19 @@ bool TestRenderPass::Initialize(uint32_t w, uint32_t h)
     m_Width = w;
     m_Height = h;
 
+    // Sampler
+    RHISamplerCreateInfo samplerInfo;
+    m_Sampler = m_RHI->CreateRHISampler(samplerInfo);
+    if (!m_Sampler)
+    {
+        SANDBOX_LOG_ERROR("RHI::CreateRHISampler fail");
+        return false;
+    }
+
     // Descriptor Set
     RHIDescriptorSetCreateInfo descSetCreateInfo = {
-        {0, ERHIDescriptorType::RHI_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1, RHI_SHADER_STAGE_FRAGMENT_BIT}
+        {0,       ERHIDescriptorType::RHI_DESCRIPTOR_TYPE_SAMPLER, 1, RHI_SHADER_STAGE_FRAGMENT_BIT},
+        {1, ERHIDescriptorType::RHI_DESCRIPTOR_TYPE_SAMPLED_IMAGE, 1, RHI_SHADER_STAGE_FRAGMENT_BIT}
     };
 
     m_DescriptorSet = m_RHI->CreateRHIDescriptorSet(descSetCreateInfo);
@@ -60,7 +70,9 @@ bool TestRenderPass::Initialize(uint32_t w, uint32_t h)
         return false;
     }
 
-    // Graphic pipeline
+    m_DescriptorSets = {m_DescriptorSet};
+
+    // Shaders
     const std::string resPath = ME::Application::Get().GetResourcePath();
     RHIShaderCreateInfo shaderCreateInfo;
     shaderCreateInfo.Type = ERHIShaderType::Vertex;
@@ -77,6 +89,7 @@ bool TestRenderPass::Initialize(uint32_t w, uint32_t h)
     shaders.push_back(m_VertexShader);
     shaders.push_back(m_PixelShader);
 
+    // Vertex Input Layout
     RHIVertexInputLayout vertexInputLayout = {
         {"InPosition", ERHIShaderDataType::Float4, 0},
         {   "InColor", ERHIShaderDataType::Float4, 1},
@@ -111,11 +124,9 @@ bool TestRenderPass::Initialize(uint32_t w, uint32_t h)
     graphicPipelineCreateInfo.RenderPass = m_RHIRenderPass;
     graphicPipelineCreateInfo.ConstantRanges = constantRanges;
     graphicPipelineCreateInfo.SetLayoutDescs = setLayoutDescs;
-
-    // Descriptor Set
-    m_DescriptorSets = {m_DescriptorSet};
     graphicPipelineCreateInfo.DescriptorSet = m_DescriptorSets;
 
+    // Graphic pipeline
     m_Pipeline = m_RHI->CreateGraphicPipeline(graphicPipelineCreateInfo);
     if (!m_Pipeline)
     {
@@ -200,8 +211,8 @@ bool TestRenderPass::Initialize(uint32_t w, uint32_t h)
 
     // Update DescriptorSets
     std::vector<RHIWriteDescriptorSet> writeDescSets = {
-        {ERHIDescriptorType::RHI_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 0, 0, m_Texture}
-    };
+        RHIWriteDescriptorSet(ERHIDescriptorType::RHI_DESCRIPTOR_TYPE_SAMPLER, 0, 0, m_Sampler),
+        RHIWriteDescriptorSet(ERHIDescriptorType::RHI_DESCRIPTOR_TYPE_SAMPLED_IMAGE, 1, 0, m_Texture)};
 
     m_RHI->UpdateDescriptorSets(m_DescriptorSet, writeDescSets);
 
@@ -374,4 +385,9 @@ void* TestRenderPass::GetTargetImTextureID()
 void TestRenderPass::SetColor(std::array<float, 4> color)
 {
     m_ClearColor = color;
+}
+
+bool TestRenderPass::CreateGraphicPipelineAndResources()
+{
+    return false;
 }
