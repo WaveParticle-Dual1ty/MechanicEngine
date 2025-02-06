@@ -9,6 +9,7 @@
 #include "RHIBuffer.h"
 #include "RHIDescriptorSet.h"
 #include "RHIPipeline.h"
+#include "RHIShaders.h"
 
 namespace ME
 {

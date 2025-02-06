@@ -2,6 +2,7 @@
 #include <vector>
 #include "RHIResources.h"
 #include "RHIDescriptorSet.h"
+#include "RHIShaders.h"
 
 namespace ME
 {

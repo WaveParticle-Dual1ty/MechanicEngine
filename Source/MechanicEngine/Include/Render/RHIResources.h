@@ -22,27 +22,6 @@ struct RHIRenderPass
     virtual ~RHIRenderPass() = default;
 };
 
-enum class ERHIShaderType
-{
-    Vertex,
-    Pixel,
-};
-
-struct RHIShaderCreateInfo
-{
-    ERHIShaderType Type = ERHIShaderType::Vertex;
-    std::string ShaderFile;
-    std::string EntryName;
-};
-
-struct RHIShader
-{
-    virtual ~RHIShader() = default;
-
-    ERHIShaderType Type = ERHIShaderType::Vertex;
-    std::string EntryName;
-};
-
 struct RHIViewport
 {
     float X = 0;
