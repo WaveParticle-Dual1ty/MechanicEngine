@@ -76,12 +76,12 @@ bool TestRenderPass::Initialize(uint32_t w, uint32_t h)
     const std::string resPath = ME::Application::Get().GetResourcePath();
     RHIShaderCreateInfo shaderCreateInfo;
     shaderCreateInfo.Type = ERHIShaderType::Vertex;
-    shaderCreateInfo.ShaderFile = resPath + "/Shaders/BasicVertexShader.glsl";
+    shaderCreateInfo.ShaderFile = resPath + "/Shaders/TestShader.vert";
     shaderCreateInfo.EntryName = "main";
     m_VertexShader = m_RHI->CreateRHIShader(shaderCreateInfo);
 
     shaderCreateInfo.Type = ERHIShaderType::Pixel;
-    shaderCreateInfo.ShaderFile = resPath + "/Shaders/BasicPixelShader.glsl";
+    shaderCreateInfo.ShaderFile = resPath + "/Shaders/TestShader.frag";
     shaderCreateInfo.EntryName = "main";
     m_PixelShader = m_RHI->CreateRHIShader(shaderCreateInfo);
 
