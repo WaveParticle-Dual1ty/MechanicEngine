@@ -608,6 +608,39 @@ Ref<RHIDescriptorSet> VulkanRHI::CreateRHIDescriptorSet(RHIDescriptorSetCreateIn
     return rhiDescSet;
 }
 
+Ref<RHISampler> VulkanRHI::CreateRHISampler(RHISamplerCreateInfo createInfo)
+{
+    VkSamplerCreateInfo samplerCreateInfo;
+    samplerCreateInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
+    samplerCreateInfo.pNext = nullptr;
+    samplerCreateInfo.flags = 0;
+    samplerCreateInfo.magFilter = VK_FILTER_LINEAR;
+    samplerCreateInfo.minFilter = VK_FILTER_LINEAR;
+    samplerCreateInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
+    samplerCreateInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+    samplerCreateInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+    samplerCreateInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+    samplerCreateInfo.mipLodBias = 0;
+    samplerCreateInfo.anisotropyEnable = VK_FALSE;
+    samplerCreateInfo.maxAnisotropy = 1;
+    samplerCreateInfo.compareEnable = VK_FALSE;
+    samplerCreateInfo.compareOp = VK_COMPARE_OP_NEVER;
+    samplerCreateInfo.minLod = 0;
+    samplerCreateInfo.maxLod = 0;
+    samplerCreateInfo.borderColor = VK_BORDER_COLOR_FLOAT_TRANSPARENT_BLACK;
+    samplerCreateInfo.unnormalizedCoordinates = VK_FALSE;
+
+    Ref<VulkanRHISampler> rhiSampler = CreateRef<VulkanRHISampler>();
+    VkResult res = vkCreateSampler(m_Device, &samplerCreateInfo, nullptr, &rhiSampler->Sampler);
+    if (res != VK_SUCCESS)
+    {
+        RENDER_LOG_ERROR("vkCreateSampler fail");
+        return nullptr;
+    }
+
+    return rhiSampler;
+}
+
 Ref<RHIGraphicPipeline> VulkanRHI::CreateGraphicPipeline(RHIGraphicPipelineCreateInfo createInfo)
 {
     // shader

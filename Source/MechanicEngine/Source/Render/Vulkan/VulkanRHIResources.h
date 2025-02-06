@@ -19,4 +19,8 @@ struct VulkanRHIShader : RHIShader
     VkShaderModule ShaderModule = VK_NULL_HANDLE;
 };
 
+struct VulkanRHISampler : public RHISampler
+{
+    VkSampler Sampler = VK_NULL_HANDLE;
+};
 }  //namespace ME
