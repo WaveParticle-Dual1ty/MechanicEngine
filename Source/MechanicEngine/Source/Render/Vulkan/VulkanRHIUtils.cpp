@@ -77,123 +77,6 @@ ERHIPixelFormat ConvertVkFormatToERHIPixelFormat(VkFormat format)
     return res;
 }
 
-VkAccessFlags ConvertERHIAccessFlagToVkAccessFlags(ERHIAccessFlag flag)
-{
-    VkAccessFlags res;
-
-    switch (flag)
-    {
-        case ERHIAccessFlag::RHI_ACCESS_INDIRECT_COMMAND_READ_BIT:
-            res = VK_ACCESS_INDIRECT_COMMAND_READ_BIT;
-            break;
-        case ERHIAccessFlag::RHI_ACCESS_INDEX_READ_BIT:
-            res = VK_ACCESS_INDEX_READ_BIT;
-            break;
-        case ERHIAccessFlag::RHI_ACCESS_VERTEX_ATTRIBUTE_READ_BIT:
-            res = VK_ACCESS_VERTEX_ATTRIBUTE_READ_BIT;
-            break;
-        case ERHIAccessFlag::RHI_ACCESS_UNIFORM_READ_BIT:
-            res = VK_ACCESS_UNIFORM_READ_BIT;
-            break;
-        case ERHIAccessFlag::RHI_ACCESS_INPUT_ATTACHMENT_READ_BIT:
-            res = VK_ACCESS_INPUT_ATTACHMENT_READ_BIT;
-            break;
-        case ERHIAccessFlag::RHI_ACCESS_SHADER_READ_BIT:
-            res = VK_ACCESS_SHADER_READ_BIT;
-            break;
-        case ERHIAccessFlag::RHI_ACCESS_SHADER_WRITE_BIT:
-            res = VK_ACCESS_SHADER_WRITE_BIT;
-            break;
-        case ERHIAccessFlag::RHI_ACCESS_COLOR_ATTACHMENT_READ_BIT:
-            res = VK_ACCESS_COLOR_ATTACHMENT_READ_BIT;
-            break;
-        case ERHIAccessFlag::RHI_ACCESS_COLOR_ATTACHMENT_WRITE_BIT:
-            res = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
-            break;
-        case ERHIAccessFlag::RHI_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT:
-            res = VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT;
-            break;
-        case ERHIAccessFlag::RHI_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT:
-            res = VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
-            break;
-        case ERHIAccessFlag::RHI_ACCESS_TRANSFER_READ_BIT:
-            res = VK_ACCESS_TRANSFER_READ_BIT;
-            break;
-        case ERHIAccessFlag::RHI_ACCESS_TRANSFER_WRITE_BIT:
-            res = VK_ACCESS_TRANSFER_WRITE_BIT;
-            break;
-        case ERHIAccessFlag::RHI_ACCESS_HOST_READ_BIT:
-            res = VK_ACCESS_HOST_READ_BIT;
-            break;
-        case ERHIAccessFlag::RHI_ACCESS_HOST_WRITE_BIT:
-            res = VK_ACCESS_HOST_WRITE_BIT;
-            break;
-        case ERHIAccessFlag::RHI_ACCESS_MEMORY_READ_BIT:
-            res = VK_ACCESS_MEMORY_READ_BIT;
-            break;
-        case ERHIAccessFlag::RHI_ACCESS_MEMORY_WRITE_BIT:
-            res = VK_ACCESS_MEMORY_WRITE_BIT;
-            break;
-        case ERHIAccessFlag::RHI_ACCESS_NONE:
-            res = VK_ACCESS_NONE;
-            break;
-        case ERHIAccessFlag::RHI_ACCESS_TRANSFORM_FEEDBACK_WRITE_BIT_EXT:
-            res = VK_ACCESS_TRANSFORM_FEEDBACK_WRITE_BIT_EXT;
-            break;
-        case ERHIAccessFlag::RHI_ACCESS_TRANSFORM_FEEDBACK_COUNTER_READ_BIT_EXT:
-            res = VK_ACCESS_TRANSFORM_FEEDBACK_COUNTER_READ_BIT_EXT;
-            break;
-        case ERHIAccessFlag::RHI_ACCESS_TRANSFORM_FEEDBACK_COUNTER_WRITE_BIT_EXT:
-            res = VK_ACCESS_TRANSFORM_FEEDBACK_COUNTER_WRITE_BIT_EXT;
-            break;
-        case ERHIAccessFlag::RHI_ACCESS_CONDITIONAL_RENDERING_READ_BIT_EXT:
-            res = VK_ACCESS_CONDITIONAL_RENDERING_READ_BIT_EXT;
-            break;
-        case ERHIAccessFlag::RHI_ACCESS_COLOR_ATTACHMENT_READ_NONCOHERENT_BIT_EXT:
-            res = VK_ACCESS_COLOR_ATTACHMENT_READ_NONCOHERENT_BIT_EXT;
-            break;
-        case ERHIAccessFlag::RHI_ACCESS_ACCELERATION_STRUCTURE_READ_BIT_KHR:
-            res = VK_ACCESS_ACCELERATION_STRUCTURE_READ_BIT_KHR;
-            break;
-        case ERHIAccessFlag::RHI_ACCESS_ACCELERATION_STRUCTURE_WRITE_BIT_KHR:
-            res = VK_ACCESS_ACCELERATION_STRUCTURE_WRITE_BIT_KHR;
-            break;
-        case ERHIAccessFlag::RHI_ACCESS_FRAGMENT_DENSITY_MAP_READ_BIT_EXT:
-            res = VK_ACCESS_FRAGMENT_DENSITY_MAP_READ_BIT_EXT;
-            break;
-        case ERHIAccessFlag::RHI_ACCESS_FRAGMENT_SHADING_RATE_ATTACHMENT_READ_BIT_KHR:
-            res = VK_ACCESS_FRAGMENT_SHADING_RATE_ATTACHMENT_READ_BIT_KHR;
-            break;
-        case ERHIAccessFlag::RHI_ACCESS_COMMAND_PREPROCESS_READ_BIT_NV:
-            res = VK_ACCESS_COMMAND_PREPROCESS_READ_BIT_NV;
-            break;
-        case ERHIAccessFlag::RHI_ACCESS_COMMAND_PREPROCESS_WRITE_BIT_NV:
-            res = VK_ACCESS_COMMAND_PREPROCESS_WRITE_BIT_NV;
-            break;
-        case ERHIAccessFlag::RHI_ACCESS_SHADING_RATE_IMAGE_READ_BIT_NV:
-            res = VK_ACCESS_SHADING_RATE_IMAGE_READ_BIT_NV;
-            break;
-        case ERHIAccessFlag::RHI_ACCESS_ACCELERATION_STRUCTURE_READ_BIT_NV:
-            res = VK_ACCESS_ACCELERATION_STRUCTURE_READ_BIT_NV;
-            break;
-        case ERHIAccessFlag::RHI_ACCESS_ACCELERATION_STRUCTURE_WRITE_BIT_NV:
-            res = VK_ACCESS_ACCELERATION_STRUCTURE_WRITE_BIT_NV;
-            break;
-        case ERHIAccessFlag::RHI_ACCESS_NONE_KHR:
-            res = VK_ACCESS_NONE_KHR;
-            break;
-        case ERHIAccessFlag::RHI_ACCESS_FLAG_BITS_MAX_ENUM:
-            res = VK_ACCESS_FLAG_BITS_MAX_ENUM;
-            break;
-        default:
-            ME_ASSERT(false, "Not support ERHIAccessFlag convert")
-            res = VK_ACCESS_FLAG_BITS_MAX_ENUM;
-            break;
-    }
-
-    return VkAccessFlags();
-}
-
 VkImageAspectFlags ConvertERHIImageAspectFlagToVkImageAspectFlags(ERHIImageAspectFlag flag)
 {
     VkImageAspectFlags res;
@@ -538,6 +421,85 @@ VkDescriptorType ConvertERHIDescriptorTypeToVkDescriptorType(ERHIDescriptorType 
             ME_ASSERT(false, "Not supoort ERHIDescriptorType type now");
             return VK_DESCRIPTOR_TYPE_MAX_ENUM;
     }
+}
+
+VkAccessFlags ConvertERHIAccessFlagToVkAccessFlags(RHIAccessFlags flag)
+{
+    VkAccessFlags res = 0;
+
+    if (flag & RHI_ACCESS_INDIRECT_COMMAND_READ_BIT)
+        res |= VK_ACCESS_INDIRECT_COMMAND_READ_BIT;
+    if (flag & RHI_ACCESS_INDEX_READ_BIT)
+        res |= VK_ACCESS_INDEX_READ_BIT;
+    if (flag & RHI_ACCESS_VERTEX_ATTRIBUTE_READ_BIT)
+        res |= VK_ACCESS_VERTEX_ATTRIBUTE_READ_BIT;
+    if (flag & RHI_ACCESS_UNIFORM_READ_BIT)
+        res |= VK_ACCESS_UNIFORM_READ_BIT;
+    if (flag & RHI_ACCESS_INPUT_ATTACHMENT_READ_BIT)
+        res |= VK_ACCESS_INPUT_ATTACHMENT_READ_BIT;
+    if (flag & RHI_ACCESS_SHADER_READ_BIT)
+        res |= VK_ACCESS_SHADER_READ_BIT;
+    if (flag & RHI_ACCESS_SHADER_WRITE_BIT)
+        res |= VK_ACCESS_SHADER_WRITE_BIT;
+    if (flag & RHI_ACCESS_COLOR_ATTACHMENT_READ_BIT)
+        res |= VK_ACCESS_COLOR_ATTACHMENT_READ_BIT;
+    if (flag & RHI_ACCESS_COLOR_ATTACHMENT_WRITE_BIT)
+        res |= VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+    if (flag & RHI_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT)
+        res |= VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT;
+    if (flag & RHI_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT)
+        res |= VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
+    if (flag & RHI_ACCESS_TRANSFER_READ_BIT)
+        res |= VK_ACCESS_TRANSFER_READ_BIT;
+    if (flag & RHI_ACCESS_TRANSFER_WRITE_BIT)
+        res |= VK_ACCESS_TRANSFER_WRITE_BIT;
+    if (flag & RHI_ACCESS_HOST_READ_BIT)
+        res |= VK_ACCESS_HOST_READ_BIT;
+    if (flag & RHI_ACCESS_HOST_WRITE_BIT)
+        res |= VK_ACCESS_HOST_WRITE_BIT;
+    if (flag & RHI_ACCESS_MEMORY_READ_BIT)
+        res |= VK_ACCESS_MEMORY_READ_BIT;
+    if (flag & RHI_ACCESS_MEMORY_WRITE_BIT)
+        res |= VK_ACCESS_MEMORY_WRITE_BIT;
+    if (flag & RHI_ACCESS_NONE)
+        res |= VK_ACCESS_NONE;
+    if (flag & RHI_ACCESS_TRANSFORM_FEEDBACK_WRITE_BIT_EXT)
+        res |= VK_ACCESS_TRANSFORM_FEEDBACK_WRITE_BIT_EXT;
+    if (flag & RHI_ACCESS_TRANSFORM_FEEDBACK_COUNTER_READ_BIT_EXT)
+        res |= VK_ACCESS_TRANSFORM_FEEDBACK_COUNTER_READ_BIT_EXT;
+    if (flag & RHI_ACCESS_TRANSFORM_FEEDBACK_COUNTER_WRITE_BIT_EXT)
+        res |= VK_ACCESS_TRANSFORM_FEEDBACK_COUNTER_WRITE_BIT_EXT;
+    if (flag & RHI_ACCESS_CONDITIONAL_RENDERING_READ_BIT_EXT)
+        res |= VK_ACCESS_CONDITIONAL_RENDERING_READ_BIT_EXT;
+    if (flag & RHI_ACCESS_COLOR_ATTACHMENT_READ_NONCOHERENT_BIT_EXT)
+        res |= VK_ACCESS_COLOR_ATTACHMENT_READ_NONCOHERENT_BIT_EXT;
+    if (flag & RHI_ACCESS_ACCELERATION_STRUCTURE_READ_BIT_KHR)
+        res |= VK_ACCESS_ACCELERATION_STRUCTURE_READ_BIT_KHR;
+    if (flag & RHI_ACCESS_ACCELERATION_STRUCTURE_WRITE_BIT_KHR)
+        res |= VK_ACCESS_ACCELERATION_STRUCTURE_WRITE_BIT_KHR;
+    if (flag & RHI_ACCESS_FRAGMENT_DENSITY_MAP_READ_BIT_EXT)
+        res |= VK_ACCESS_FRAGMENT_DENSITY_MAP_READ_BIT_EXT;
+    if (flag & RHI_ACCESS_FRAGMENT_SHADING_RATE_ATTACHMENT_READ_BIT_KHR)
+        res |= VK_ACCESS_FRAGMENT_SHADING_RATE_ATTACHMENT_READ_BIT_KHR;
+    if (flag & RHI_ACCESS_COMMAND_PREPROCESS_READ_BIT_NV)
+        res |= VK_ACCESS_COMMAND_PREPROCESS_READ_BIT_NV;
+    if (flag & RHI_ACCESS_COMMAND_PREPROCESS_WRITE_BIT_NV)
+        res |= VK_ACCESS_COMMAND_PREPROCESS_WRITE_BIT_NV;
+    if (flag & RHI_ACCESS_SHADING_RATE_IMAGE_READ_BIT_NV)
+        res |= VK_ACCESS_SHADING_RATE_IMAGE_READ_BIT_NV;
+    if (flag & RHI_ACCESS_ACCELERATION_STRUCTURE_READ_BIT_NV)
+        res |= VK_ACCESS_ACCELERATION_STRUCTURE_READ_BIT_NV;
+    if (flag & RHI_ACCESS_ACCELERATION_STRUCTURE_WRITE_BIT_NV)
+        res |= VK_ACCESS_ACCELERATION_STRUCTURE_WRITE_BIT_NV;
+    if (flag & RHI_ACCESS_NONE_KHR)
+        res |= VK_ACCESS_NONE_KHR;
+    if (flag & RHI_ACCESS_COMMAND_PREPROCESS_READ_BIT_EXT)
+        res |= VK_ACCESS_COMMAND_PREPROCESS_READ_BIT_EXT;
+    if (flag & RHI_ACCESS_COMMAND_PREPROCESS_WRITE_BIT_EXT)
+        res |= VK_ACCESS_COMMAND_PREPROCESS_WRITE_BIT_EXT;
+
+    // todo
+    return 0;
 }
 
 VkPipelineStageFlags ConvertRHIPipelineStageFlagsToVkPipelineStageFlags(RHIPipelineStageFlags flag)

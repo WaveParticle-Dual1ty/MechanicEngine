@@ -95,7 +95,7 @@ void Application::Run()
         m_RHI->CmdPipelineBarrier(
             cmdBuffer,
             RHIPipelineBarrierInfo(
-                backTexture, ERHIAccessFlag::RHI_ACCESS_NONE, ERHIAccessFlag::RHI_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
+                backTexture, RHI_ACCESS_NONE, RHI_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
                 ERHIImageLayout::RHI_IMAGE_LAYOUT_UNDEFINED, ERHIImageLayout::RHI_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
                 RHI_PIPELINE_STAGE_TOP_OF_PIPE_BIT, RHI_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
                 ERHIImageAspectFlag::RHI_IMAGE_ASPECT_COLOR_BIT));
@@ -109,7 +109,7 @@ void Application::Run()
 
             m_RHI->CmdPipelineBarrier(
                 cmdBuffer, RHIPipelineBarrierInfo(
-                               uiTexture, ERHIAccessFlag::RHI_ACCESS_NONE, ERHIAccessFlag::RHI_ACCESS_TRANSFER_READ_BIT,
+                               uiTexture, RHI_ACCESS_NONE, RHI_ACCESS_TRANSFER_READ_BIT,
                                ERHIImageLayout::RHI_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
                                ERHIImageLayout::RHI_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
                                RHI_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, RHI_PIPELINE_STAGE_TRANSFER_BIT,
@@ -121,8 +121,8 @@ void Application::Run()
         m_RHI->CmdPipelineBarrier(
             cmdBuffer,
             RHIPipelineBarrierInfo(
-                backTexture, ERHIAccessFlag::RHI_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
-                ERHIAccessFlag::RHI_ACCESS_MEMORY_READ_BIT, ERHIImageLayout::RHI_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+                backTexture, RHI_ACCESS_COLOR_ATTACHMENT_WRITE_BIT, RHI_ACCESS_MEMORY_READ_BIT,
+                ERHIImageLayout::RHI_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
                 ERHIImageLayout::RHI_IMAGE_LAYOUT_PRESENT_SRC_KHR, RHI_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
                 RHI_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT, ERHIImageAspectFlag::RHI_IMAGE_ASPECT_COLOR_BIT));
 

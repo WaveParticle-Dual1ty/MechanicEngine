@@ -16,7 +16,6 @@ namespace Util
 VkFormat ConvertERHIPixelFormatToVkFormat(ERHIPixelFormat format);
 ERHIPixelFormat ConvertVkFormatToERHIPixelFormat(VkFormat format);
 
-VkAccessFlags ConvertERHIAccessFlagToVkAccessFlags(ERHIAccessFlag flag);
 VkImageAspectFlags ConvertERHIImageAspectFlagToVkImageAspectFlags(ERHIImageAspectFlag flag);
 VkImageLayout ConvertERHIImageLayoutToVkImageLayout(ERHIImageLayout flag);
 shaderc_shader_kind ConvertRHIShaderTypeToShaderKind(ERHIShaderType type);
@@ -26,6 +25,7 @@ VkPrimitiveTopology ConvertRHIPrimitiveTopologyToVkPrimitiveTopology(RHIPrimitiv
 VkShaderStageFlagBits ConvertERHIShaderStageToVkShaderStageFlagBits(ERHIShaderStage stage);
 VkDescriptorType ConvertERHIDescriptorTypeToVkDescriptorType(ERHIDescriptorType type);
 
+VkAccessFlags ConvertERHIAccessFlagToVkAccessFlags(RHIAccessFlags flag);
 VkPipelineStageFlags ConvertRHIPipelineStageFlagsToVkPipelineStageFlags(RHIPipelineStageFlags flag);
 VkImageUsageFlags ConvertERHITextureUsageFlagsToVkImageUsageFlags(RHITextureUsageFlags flags);
 VkMemoryPropertyFlags ConvertRHIMemoryPropertyFlagsToVkMemoryPropertyFlags(RHIMemoryPropertyFlags flags);

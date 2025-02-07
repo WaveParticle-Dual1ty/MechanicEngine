@@ -295,7 +295,7 @@ bool TestRenderPass::Draw(Ref<RHICommandBuffer> cmdBuffer)
     m_RHI->CmdPipelineBarrier(
         cmdBuffer,
         RHIPipelineBarrierInfo(
-            texture, ERHIAccessFlag::RHI_ACCESS_NONE, ERHIAccessFlag::RHI_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
+            texture, RHI_ACCESS_NONE, RHI_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
             ERHIImageLayout::RHI_IMAGE_LAYOUT_UNDEFINED, ERHIImageLayout::RHI_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
             RHI_PIPELINE_STAGE_TOP_OF_PIPE_BIT, RHI_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
             ERHIImageAspectFlag::RHI_IMAGE_ASPECT_COLOR_BIT));
@@ -306,8 +306,7 @@ bool TestRenderPass::Draw(Ref<RHICommandBuffer> cmdBuffer)
     m_RHI->CmdPipelineBarrier(
         cmdBuffer,
         RHIPipelineBarrierInfo(
-            texture, ERHIAccessFlag::RHI_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
-            ERHIAccessFlag::RHI_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
+            texture, RHI_ACCESS_COLOR_ATTACHMENT_WRITE_BIT, RHI_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
             ERHIImageLayout::RHI_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
             ERHIImageLayout::RHI_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, RHI_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
             RHI_PIPELINE_STAGE_VERTEX_INPUT_BIT, ERHIImageAspectFlag::RHI_IMAGE_ASPECT_COLOR_BIT));
@@ -318,7 +317,7 @@ bool TestRenderPass::Draw(Ref<RHICommandBuffer> cmdBuffer)
 
         m_RHI->CmdPipelineBarrier(
             cmdBuffer, RHIPipelineBarrierInfo(
-                           m_Texture, ERHIAccessFlag::RHI_ACCESS_NONE, ERHIAccessFlag::RHI_ACCESS_SHADER_READ_BIT,
+                           m_Texture, RHI_ACCESS_NONE, RHI_ACCESS_SHADER_READ_BIT,
                            ERHIImageLayout::RHI_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
                            ERHIImageLayout::RHI_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, RHI_PIPELINE_STAGE_TRANSFER_BIT,
                            RHI_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, ERHIImageAspectFlag::RHI_IMAGE_ASPECT_COLOR_BIT));
@@ -360,8 +359,7 @@ bool TestRenderPass::Draw(Ref<RHICommandBuffer> cmdBuffer)
     m_RHI->CmdPipelineBarrier(
         cmdBuffer,
         RHIPipelineBarrierInfo(
-            texture, ERHIAccessFlag::RHI_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
-            ERHIAccessFlag::RHI_ACCESS_COLOR_ATTACHMENT_READ_BIT,
+            texture, RHI_ACCESS_COLOR_ATTACHMENT_WRITE_BIT, RHI_ACCESS_COLOR_ATTACHMENT_READ_BIT,
             ERHIImageLayout::RHI_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, ERHIImageLayout::RHI_IMAGE_LAYOUT_GENERAL,
             RHI_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, RHI_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
             ERHIImageAspectFlag::RHI_IMAGE_ASPECT_COLOR_BIT));
