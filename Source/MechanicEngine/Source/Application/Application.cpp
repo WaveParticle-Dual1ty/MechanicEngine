@@ -97,8 +97,7 @@ void Application::Run()
             RHIPipelineBarrierInfo(
                 backTexture, ERHIAccessFlag::RHI_ACCESS_NONE, ERHIAccessFlag::RHI_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
                 ERHIImageLayout::RHI_IMAGE_LAYOUT_UNDEFINED, ERHIImageLayout::RHI_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
-                ERHIPipelineStageFlag::RHI_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
-                ERHIPipelineStageFlag::RHI_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+                RHI_PIPELINE_STAGE_TOP_OF_PIPE_BIT, RHI_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
                 ERHIImageAspectFlag::RHI_IMAGE_ASPECT_COLOR_BIT));
         m_RHI->CmdClearColor(cmdBuffer, backTexture, RHIColor(0, 0, 0, 1));
 
@@ -113,8 +112,7 @@ void Application::Run()
                                uiTexture, ERHIAccessFlag::RHI_ACCESS_NONE, ERHIAccessFlag::RHI_ACCESS_TRANSFER_READ_BIT,
                                ERHIImageLayout::RHI_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
                                ERHIImageLayout::RHI_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
-                               ERHIPipelineStageFlag::RHI_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-                               ERHIPipelineStageFlag::RHI_PIPELINE_STAGE_TRANSFER_BIT,
+                               RHI_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, RHI_PIPELINE_STAGE_TRANSFER_BIT,
                                ERHIImageAspectFlag::RHI_IMAGE_ASPECT_COLOR_BIT));
 
             m_RHI->CmdCopyTexture(cmdBuffer, uiTexture, backTexture);
@@ -125,10 +123,8 @@ void Application::Run()
             RHIPipelineBarrierInfo(
                 backTexture, ERHIAccessFlag::RHI_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
                 ERHIAccessFlag::RHI_ACCESS_MEMORY_READ_BIT, ERHIImageLayout::RHI_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
-                ERHIImageLayout::RHI_IMAGE_LAYOUT_PRESENT_SRC_KHR,
-                ERHIPipelineStageFlag::RHI_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-                ERHIPipelineStageFlag::RHI_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
-                ERHIImageAspectFlag::RHI_IMAGE_ASPECT_COLOR_BIT));
+                ERHIImageLayout::RHI_IMAGE_LAYOUT_PRESENT_SRC_KHR, RHI_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+                RHI_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT, ERHIImageAspectFlag::RHI_IMAGE_ASPECT_COLOR_BIT));
 
         m_RHI->EndCommandBuffer(cmdBuffer);
 

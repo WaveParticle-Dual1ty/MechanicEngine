@@ -77,117 +77,6 @@ ERHIPixelFormat ConvertVkFormatToERHIPixelFormat(VkFormat format)
     return res;
 }
 
-VkPipelineStageFlags ConvertERHIPipelineStageFlagToVkPipelineStageFlags(ERHIPipelineStageFlag flag)
-{
-    VkPipelineStageFlags res;
-
-    switch (flag)
-    {
-        case ERHIPipelineStageFlag::RHI_PIPELINE_STAGE_TOP_OF_PIPE_BIT:
-            res = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
-            break;
-        case ERHIPipelineStageFlag::RHI_PIPELINE_STAGE_DRAW_INDIRECT_BIT:
-            res = VK_PIPELINE_STAGE_DRAW_INDIRECT_BIT;
-            break;
-        case ERHIPipelineStageFlag::RHI_PIPELINE_STAGE_VERTEX_INPUT_BIT:
-            res = VK_PIPELINE_STAGE_VERTEX_INPUT_BIT;
-            break;
-        case ERHIPipelineStageFlag::RHI_PIPELINE_STAGE_VERTEX_SHADER_BIT:
-            res = VK_PIPELINE_STAGE_VERTEX_SHADER_BIT;
-            break;
-        case ERHIPipelineStageFlag::RHI_PIPELINE_STAGE_TESSELLATION_CONTROL_SHADER_BIT:
-            res = VK_PIPELINE_STAGE_TESSELLATION_CONTROL_SHADER_BIT;
-            break;
-        case ERHIPipelineStageFlag::RHI_PIPELINE_STAGE_TESSELLATION_EVALUATION_SHADER_BIT:
-            res = VK_PIPELINE_STAGE_TESSELLATION_EVALUATION_SHADER_BIT;
-            break;
-        case ERHIPipelineStageFlag::RHI_PIPELINE_STAGE_GEOMETRY_SHADER_BIT:
-            res = VK_PIPELINE_STAGE_GEOMETRY_SHADER_BIT;
-            break;
-        case ERHIPipelineStageFlag::RHI_PIPELINE_STAGE_FRAGMENT_SHADER_BIT:
-            res = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
-            break;
-        case ERHIPipelineStageFlag::RHI_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT:
-            res = VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
-            break;
-        case ERHIPipelineStageFlag::RHI_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT:
-            res = VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT;
-            break;
-        case ERHIPipelineStageFlag::RHI_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT:
-            res = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-            break;
-        case ERHIPipelineStageFlag::RHI_PIPELINE_STAGE_COMPUTE_SHADER_BIT:
-            res = VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT;
-            break;
-        case ERHIPipelineStageFlag::RHI_PIPELINE_STAGE_TRANSFER_BIT:
-            res = VK_PIPELINE_STAGE_TRANSFER_BIT;
-            break;
-        case ERHIPipelineStageFlag::RHI_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT:
-            res = VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT;
-            break;
-        case ERHIPipelineStageFlag::RHI_PIPELINE_STAGE_HOST_BIT:
-            res = VK_PIPELINE_STAGE_HOST_BIT;
-            break;
-        case ERHIPipelineStageFlag::RHI_PIPELINE_STAGE_ALL_GRAPHICS_BIT:
-            res = VK_PIPELINE_STAGE_ALL_GRAPHICS_BIT;
-            break;
-        case ERHIPipelineStageFlag::RHI_PIPELINE_STAGE_ALL_COMMANDS_BIT:
-            res = VK_PIPELINE_STAGE_ALL_COMMANDS_BIT;
-            break;
-        case ERHIPipelineStageFlag::RHI_PIPELINE_STAGE_NONE:
-            res = VK_PIPELINE_STAGE_NONE;
-            break;
-        case ERHIPipelineStageFlag::RHI_PIPELINE_STAGE_TRANSFORM_FEEDBACK_BIT_EXT:
-            res = VK_PIPELINE_STAGE_TRANSFORM_FEEDBACK_BIT_EXT;
-            break;
-        case ERHIPipelineStageFlag::RHI_PIPELINE_STAGE_CONDITIONAL_RENDERING_BIT_EXT:
-            res = VK_PIPELINE_STAGE_CONDITIONAL_RENDERING_BIT_EXT;
-            break;
-        case ERHIPipelineStageFlag::RHI_PIPELINE_STAGE_ACCELERATION_STRUCTURE_BUILD_BIT_KHR:
-            res = VK_PIPELINE_STAGE_ACCELERATION_STRUCTURE_BUILD_BIT_KHR;
-            break;
-        case ERHIPipelineStageFlag::RHI_PIPELINE_STAGE_RAY_TRACING_SHADER_BIT_KHR:
-            res = VK_PIPELINE_STAGE_RAY_TRACING_SHADER_BIT_KHR;
-            break;
-        case ERHIPipelineStageFlag::RHI_PIPELINE_STAGE_TASK_SHADER_BIT_NV:
-            res = VK_PIPELINE_STAGE_TASK_SHADER_BIT_NV;
-            break;
-        case ERHIPipelineStageFlag::RHI_PIPELINE_STAGE_MESH_SHADER_BIT_NV:
-            res = VK_PIPELINE_STAGE_MESH_SHADER_BIT_NV;
-            break;
-        case ERHIPipelineStageFlag::RHI_PIPELINE_STAGE_FRAGMENT_DENSITY_PROCESS_BIT_EXT:
-            res = VK_PIPELINE_STAGE_FRAGMENT_DENSITY_PROCESS_BIT_EXT;
-            break;
-        case ERHIPipelineStageFlag::RHI_PIPELINE_STAGE_FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_KHR:
-            res = VK_PIPELINE_STAGE_FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_KHR;
-            break;
-        case ERHIPipelineStageFlag::RHI_PIPELINE_STAGE_COMMAND_PREPROCESS_BIT_NV:
-            res = VK_PIPELINE_STAGE_COMMAND_PREPROCESS_BIT_NV;
-            break;
-        case ERHIPipelineStageFlag::RHI_PIPELINE_STAGE_SHADING_RATE_IMAGE_BIT_NV:
-            res = VK_PIPELINE_STAGE_SHADING_RATE_IMAGE_BIT_NV;
-            break;
-        case ERHIPipelineStageFlag::RHI_PIPELINE_STAGE_RAY_TRACING_SHADER_BIT_NV:
-            res = VK_PIPELINE_STAGE_RAY_TRACING_SHADER_BIT_NV;
-            break;
-        case ERHIPipelineStageFlag::RHI_PIPELINE_STAGE_ACCELERATION_STRUCTURE_BUILD_BIT_NV:
-            res = VK_PIPELINE_STAGE_ACCELERATION_STRUCTURE_BUILD_BIT_NV;
-            break;
-        case ERHIPipelineStageFlag::RHI_PIPELINE_STAGE_NONE_KHR:
-            res = VK_PIPELINE_STAGE_NONE_KHR;
-            break;
-        case ERHIPipelineStageFlag::RHI_PIPELINE_STAGE_FLAG_BITS_MAX_ENUM:
-            res = VK_PIPELINE_STAGE_FLAG_BITS_MAX_ENUM;
-            break;
-        default:
-            ME_ASSERT(false, "Not support ERHIPipelineStageFlag convert")
-            res = VK_PIPELINE_STAGE_FLAG_BITS_MAX_ENUM;
-            break;
-    }
-
-    return res;
-}
-
 VkAccessFlags ConvertERHIAccessFlagToVkAccessFlags(ERHIAccessFlag flag)
 {
     VkAccessFlags res;
@@ -649,6 +538,82 @@ VkDescriptorType ConvertERHIDescriptorTypeToVkDescriptorType(ERHIDescriptorType 
             ME_ASSERT(false, "Not supoort ERHIDescriptorType type now");
             return VK_DESCRIPTOR_TYPE_MAX_ENUM;
     }
+}
+
+VkPipelineStageFlags ConvertRHIPipelineStageFlagsToVkPipelineStageFlags(RHIPipelineStageFlags flag)
+{
+    VkPipelineStageFlags res = 0;
+
+    if (flag & RHI_PIPELINE_STAGE_TOP_OF_PIPE_BIT)
+        res |= VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
+    if (flag & RHI_PIPELINE_STAGE_DRAW_INDIRECT_BIT)
+        res |= VK_PIPELINE_STAGE_DRAW_INDIRECT_BIT;
+    if (flag & RHI_PIPELINE_STAGE_VERTEX_INPUT_BIT)
+        res |= VK_PIPELINE_STAGE_VERTEX_INPUT_BIT;
+    if (flag & RHI_PIPELINE_STAGE_VERTEX_SHADER_BIT)
+        res |= VK_PIPELINE_STAGE_VERTEX_SHADER_BIT;
+    if (flag & RHI_PIPELINE_STAGE_TESSELLATION_CONTROL_SHADER_BIT)
+        res |= VK_PIPELINE_STAGE_TESSELLATION_CONTROL_SHADER_BIT;
+    if (flag & RHI_PIPELINE_STAGE_TESSELLATION_EVALUATION_SHADER_BIT)
+        res |= VK_PIPELINE_STAGE_TESSELLATION_EVALUATION_SHADER_BIT;
+    if (flag & RHI_PIPELINE_STAGE_GEOMETRY_SHADER_BIT)
+        res |= VK_PIPELINE_STAGE_GEOMETRY_SHADER_BIT;
+    if (flag & RHI_PIPELINE_STAGE_FRAGMENT_SHADER_BIT)
+        res |= VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
+    if (flag & RHI_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT)
+        res |= VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
+    if (flag & RHI_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT)
+        res |= VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT;
+    if (flag & RHI_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT)
+        res |= VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+    if (flag & RHI_PIPELINE_STAGE_COMPUTE_SHADER_BIT)
+        res |= VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT;
+    if (flag & RHI_PIPELINE_STAGE_TRANSFER_BIT)
+        res |= VK_PIPELINE_STAGE_TRANSFER_BIT;
+    if (flag & RHI_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT)
+        res |= VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT;
+    if (flag & RHI_PIPELINE_STAGE_HOST_BIT)
+        res |= VK_PIPELINE_STAGE_HOST_BIT;
+    if (flag & RHI_PIPELINE_STAGE_ALL_GRAPHICS_BIT)
+        res |= VK_PIPELINE_STAGE_ALL_GRAPHICS_BIT;
+    if (flag & RHI_PIPELINE_STAGE_ALL_COMMANDS_BIT)
+        res |= VK_PIPELINE_STAGE_ALL_COMMANDS_BIT;
+    if (flag & RHI_PIPELINE_STAGE_NONE)
+        res |= VK_PIPELINE_STAGE_NONE;
+    if (flag & RHI_PIPELINE_STAGE_TRANSFORM_FEEDBACK_BIT_EXT)
+        res |= VK_PIPELINE_STAGE_TRANSFORM_FEEDBACK_BIT_EXT;
+    if (flag & RHI_PIPELINE_STAGE_CONDITIONAL_RENDERING_BIT_EXT)
+        res |= VK_PIPELINE_STAGE_CONDITIONAL_RENDERING_BIT_EXT;
+    if (flag & RHI_PIPELINE_STAGE_ACCELERATION_STRUCTURE_BUILD_BIT_KHR)
+        res |= VK_PIPELINE_STAGE_ACCELERATION_STRUCTURE_BUILD_BIT_KHR;
+    if (flag & RHI_PIPELINE_STAGE_RAY_TRACING_SHADER_BIT_KHR)
+        res |= VK_PIPELINE_STAGE_RAY_TRACING_SHADER_BIT_KHR;
+    if (flag & RHI_PIPELINE_STAGE_FRAGMENT_DENSITY_PROCESS_BIT_EXT)
+        res |= VK_PIPELINE_STAGE_FRAGMENT_DENSITY_PROCESS_BIT_EXT;
+    if (flag & RHI_PIPELINE_STAGE_FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_KHR)
+        res |= VK_PIPELINE_STAGE_FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_KHR;
+    if (flag & RHI_PIPELINE_STAGE_COMMAND_PREPROCESS_BIT_NV)
+        res |= VK_PIPELINE_STAGE_COMMAND_PREPROCESS_BIT_NV;
+    if (flag & RHI_PIPELINE_STAGE_TASK_SHADER_BIT_EXT)
+        res |= VK_PIPELINE_STAGE_TASK_SHADER_BIT_EXT;
+    if (flag & RHI_PIPELINE_STAGE_MESH_SHADER_BIT_EXT)
+        res |= VK_PIPELINE_STAGE_MESH_SHADER_BIT_EXT;
+    if (flag & RHI_PIPELINE_STAGE_SHADING_RATE_IMAGE_BIT_NV)
+        res |= VK_PIPELINE_STAGE_SHADING_RATE_IMAGE_BIT_NV;
+    if (flag & RHI_PIPELINE_STAGE_RAY_TRACING_SHADER_BIT_NV)
+        res |= VK_PIPELINE_STAGE_RAY_TRACING_SHADER_BIT_NV;
+    if (flag & RHI_PIPELINE_STAGE_ACCELERATION_STRUCTURE_BUILD_BIT_NV)
+        res |= VK_PIPELINE_STAGE_ACCELERATION_STRUCTURE_BUILD_BIT_NV;
+    if (flag & RHI_PIPELINE_STAGE_TASK_SHADER_BIT_NV)
+        res |= VK_PIPELINE_STAGE_TASK_SHADER_BIT_NV;
+    if (flag & RHI_PIPELINE_STAGE_MESH_SHADER_BIT_NV)
+        res |= VK_PIPELINE_STAGE_MESH_SHADER_BIT_NV;
+    if (flag & RHI_PIPELINE_STAGE_NONE_KHR)
+        res |= VK_PIPELINE_STAGE_NONE_KHR;
+    if (flag & RHI_PIPELINE_STAGE_COMMAND_PREPROCESS_BIT_EXT)
+        res |= VK_PIPELINE_STAGE_COMMAND_PREPROCESS_BIT_EXT;
+
+    return res;
 }
 
 VkImageUsageFlags ConvertERHITextureUsageFlagsToVkImageUsageFlags(RHITextureUsageFlags flags)

@@ -1132,9 +1132,9 @@ void VulkanRHI::CmdPipelineBarrier(Ref<RHICommandBuffer> cmdBuffer, RHIPipelineB
         barrier.subresourceRange.layerCount = barrierInfo.LayerCount;
 
         VkPipelineStageFlags srcPipelineStage =
-            Util::ConvertERHIPipelineStageFlagToVkPipelineStageFlags(barrierInfo.SrcPipelineStage);
+            Util::ConvertRHIPipelineStageFlagsToVkPipelineStageFlags(barrierInfo.SrcPipelineStage);
         VkPipelineStageFlags dstPipelineStage =
-            Util::ConvertERHIPipelineStageFlagToVkPipelineStageFlags(barrierInfo.DstPipelineStage);
+            Util::ConvertRHIPipelineStageFlagsToVkPipelineStageFlags(barrierInfo.DstPipelineStage);
 
         vkCmdPipelineBarrier(
             vulkanCmdBuffer->CommandBuffer, srcPipelineStage, dstPipelineStage, 0, 0, nullptr, 0, nullptr, 1, &barrier);
