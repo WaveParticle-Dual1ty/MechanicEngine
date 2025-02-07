@@ -77,72 +77,6 @@ ERHIPixelFormat ConvertVkFormatToERHIPixelFormat(VkFormat format)
     return res;
 }
 
-VkImageAspectFlags ConvertERHIImageAspectFlagToVkImageAspectFlags(ERHIImageAspectFlag flag)
-{
-    VkImageAspectFlags res;
-
-    switch (flag)
-    {
-        case ERHIImageAspectFlag::RHI_IMAGE_ASPECT_COLOR_BIT:
-            res = VK_IMAGE_ASPECT_COLOR_BIT;
-            break;
-        case ERHIImageAspectFlag::RHI_IMAGE_ASPECT_DEPTH_BIT:
-            res = VK_IMAGE_ASPECT_DEPTH_BIT;
-            break;
-        case ERHIImageAspectFlag::RHI_IMAGE_ASPECT_STENCIL_BIT:
-            res = VK_IMAGE_ASPECT_STENCIL_BIT;
-            break;
-        case ERHIImageAspectFlag::RHI_IMAGE_ASPECT_METADATA_BIT:
-            res = VK_IMAGE_ASPECT_METADATA_BIT;
-            break;
-        case ERHIImageAspectFlag::RHI_IMAGE_ASPECT_PLANE_0_BIT:
-            res = VK_IMAGE_ASPECT_PLANE_0_BIT;
-            break;
-        case ERHIImageAspectFlag::RHI_IMAGE_ASPECT_PLANE_1_BIT:
-            res = VK_IMAGE_ASPECT_PLANE_1_BIT;
-            break;
-        case ERHIImageAspectFlag::RHI_IMAGE_ASPECT_PLANE_2_BIT:
-            res = VK_IMAGE_ASPECT_PLANE_2_BIT;
-            break;
-        case ERHIImageAspectFlag::RHI_IMAGE_ASPECT_NONE:
-            res = VK_IMAGE_ASPECT_NONE;
-            break;
-        case ERHIImageAspectFlag::RHI_IMAGE_ASPECT_MEMORY_PLANE_0_BIT_EXT:
-            res = VK_IMAGE_ASPECT_MEMORY_PLANE_0_BIT_EXT;
-            break;
-        case ERHIImageAspectFlag::RHI_IMAGE_ASPECT_MEMORY_PLANE_1_BIT_EXT:
-            res = VK_IMAGE_ASPECT_MEMORY_PLANE_1_BIT_EXT;
-            break;
-        case ERHIImageAspectFlag::RHI_IMAGE_ASPECT_MEMORY_PLANE_2_BIT_EXT:
-            res = VK_IMAGE_ASPECT_MEMORY_PLANE_2_BIT_EXT;
-            break;
-        case ERHIImageAspectFlag::RHI_IMAGE_ASPECT_MEMORY_PLANE_3_BIT_EXT:
-            res = VK_IMAGE_ASPECT_MEMORY_PLANE_3_BIT_EXT;
-            break;
-        case ERHIImageAspectFlag::RHI_IMAGE_ASPECT_PLANE_0_BIT_KHR:
-            res = VK_IMAGE_ASPECT_PLANE_0_BIT_KHR;
-            break;
-        case ERHIImageAspectFlag::RHI_IMAGE_ASPECT_PLANE_1_BIT_KHR:
-            res = VK_IMAGE_ASPECT_PLANE_1_BIT_KHR;
-            break;
-        case ERHIImageAspectFlag::RHI_IMAGE_ASPECT_PLANE_2_BIT_KHR:
-            res = VK_IMAGE_ASPECT_PLANE_2_BIT_KHR;
-            break;
-        case ERHIImageAspectFlag::RHI_IMAGE_ASPECT_NONE_KHR:
-            res = VK_IMAGE_ASPECT_NONE_KHR;
-            break;
-        case ERHIImageAspectFlag::RHI_IMAGE_ASPECT_FLAG_BITS_MAX_ENUM:
-            res = VK_IMAGE_ASPECT_FLAG_BITS_MAX_ENUM;
-            break;
-        default:
-            ME_ASSERT(false, "Not support ERHIImageAspectFlag convert")
-            res = VK_IMAGE_ASPECT_FLAG_BITS_MAX_ENUM;
-            break;
-    }
-
-    return res;
-}
-
 VkImageLayout ConvertERHIImageLayoutToVkImageLayout(ERHIImageLayout flag)
 {
     VkImageLayout res;
@@ -423,7 +357,7 @@ VkDescriptorType ConvertERHIDescriptorTypeToVkDescriptorType(ERHIDescriptorType 
     }
 }
 
-VkAccessFlags ConvertERHIAccessFlagToVkAccessFlags(RHIAccessFlags flag)
+VkAccessFlags ConvertRHIAccessFlagsToVkAccessFlags(RHIAccessFlags flag)
 {
     VkAccessFlags res = 0;
 
@@ -578,7 +512,47 @@ VkPipelineStageFlags ConvertRHIPipelineStageFlagsToVkPipelineStageFlags(RHIPipel
     return res;
 }
 
-VkImageUsageFlags ConvertERHITextureUsageFlagsToVkImageUsageFlags(RHITextureUsageFlags flags)
+VkImageAspectFlags ConvertRHIImageAspectFlagsToVkImageAspectFlags(RHIImageAspectFlags flag)
+{
+    VkImageAspectFlags res = 0;
+
+    if (flag & RHI_IMAGE_ASPECT_COLOR_BIT)
+        res |= RHI_IMAGE_ASPECT_COLOR_BIT;
+    if (flag & RHI_IMAGE_ASPECT_DEPTH_BIT)
+        res |= RHI_IMAGE_ASPECT_DEPTH_BIT;
+    if (flag & RHI_IMAGE_ASPECT_STENCIL_BIT)
+        res |= RHI_IMAGE_ASPECT_STENCIL_BIT;
+    if (flag & RHI_IMAGE_ASPECT_METADATA_BIT)
+        res |= RHI_IMAGE_ASPECT_METADATA_BIT;
+    if (flag & RHI_IMAGE_ASPECT_PLANE_0_BIT)
+        res |= RHI_IMAGE_ASPECT_PLANE_0_BIT;
+    if (flag & RHI_IMAGE_ASPECT_PLANE_1_BIT)
+        res |= RHI_IMAGE_ASPECT_PLANE_1_BIT;
+    if (flag & RHI_IMAGE_ASPECT_PLANE_2_BIT)
+        res |= RHI_IMAGE_ASPECT_PLANE_2_BIT;
+    if (flag & RHI_IMAGE_ASPECT_NONE)
+        res |= RHI_IMAGE_ASPECT_NONE;
+    if (flag & RHI_IMAGE_ASPECT_MEMORY_PLANE_0_BIT_EXT)
+        res |= RHI_IMAGE_ASPECT_MEMORY_PLANE_0_BIT_EXT;
+    if (flag & RHI_IMAGE_ASPECT_MEMORY_PLANE_1_BIT_EXT)
+        res |= RHI_IMAGE_ASPECT_MEMORY_PLANE_1_BIT_EXT;
+    if (flag & RHI_IMAGE_ASPECT_MEMORY_PLANE_2_BIT_EXT)
+        res |= RHI_IMAGE_ASPECT_MEMORY_PLANE_2_BIT_EXT;
+    if (flag & RHI_IMAGE_ASPECT_MEMORY_PLANE_3_BIT_EXT)
+        res |= RHI_IMAGE_ASPECT_MEMORY_PLANE_3_BIT_EXT;
+    if (flag & RHI_IMAGE_ASPECT_PLANE_0_BIT_KHR)
+        res |= RHI_IMAGE_ASPECT_PLANE_0_BIT_KHR;
+    if (flag & RHI_IMAGE_ASPECT_PLANE_1_BIT_KHR)
+        res |= RHI_IMAGE_ASPECT_PLANE_1_BIT_KHR;
+    if (flag & RHI_IMAGE_ASPECT_PLANE_2_BIT_KHR)
+        res |= RHI_IMAGE_ASPECT_PLANE_2_BIT_KHR;
+    if (flag & RHI_IMAGE_ASPECT_NONE_KHR)
+        res |= RHI_IMAGE_ASPECT_NONE_KHR;
+
+    return res;
+}
+
+VkImageUsageFlags ConvertRHITextureUsageFlagsToVkImageUsageFlags(RHITextureUsageFlags flags)
 {
     VkImageUsageFlags res = 0;
 

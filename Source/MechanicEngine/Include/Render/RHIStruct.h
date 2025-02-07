@@ -9,27 +9,6 @@
 
 namespace ME
 {
-enum class ERHIImageAspectFlag
-{
-    RHI_IMAGE_ASPECT_COLOR_BIT,
-    RHI_IMAGE_ASPECT_DEPTH_BIT,
-    RHI_IMAGE_ASPECT_STENCIL_BIT,
-    RHI_IMAGE_ASPECT_METADATA_BIT,
-    RHI_IMAGE_ASPECT_PLANE_0_BIT,
-    RHI_IMAGE_ASPECT_PLANE_1_BIT,
-    RHI_IMAGE_ASPECT_PLANE_2_BIT,
-    RHI_IMAGE_ASPECT_NONE,
-    RHI_IMAGE_ASPECT_MEMORY_PLANE_0_BIT_EXT,
-    RHI_IMAGE_ASPECT_MEMORY_PLANE_1_BIT_EXT,
-    RHI_IMAGE_ASPECT_MEMORY_PLANE_2_BIT_EXT,
-    RHI_IMAGE_ASPECT_MEMORY_PLANE_3_BIT_EXT,
-    RHI_IMAGE_ASPECT_PLANE_0_BIT_KHR,
-    RHI_IMAGE_ASPECT_PLANE_1_BIT_KHR,
-    RHI_IMAGE_ASPECT_PLANE_2_BIT_KHR,
-    RHI_IMAGE_ASPECT_NONE_KHR,
-    RHI_IMAGE_ASPECT_FLAG_BITS_MAX_ENUM
-};
-
 enum class ERHIImageLayout
 {
     RHI_IMAGE_LAYOUT_UNDEFINED,
@@ -143,7 +122,7 @@ struct RHIPipelineBarrierInfo
     uint32_t SrcQueueFamilyIndex = 0;
     uint32_t DstQueueFamilyIndex = 0;
 
-    ERHIImageAspectFlag AspectMask = ERHIImageAspectFlag::RHI_IMAGE_ASPECT_NONE;
+    RHIImageAspectFlags AspectMask = RHI_IMAGE_ASPECT_NONE;
     uint32_t BaseMipLevel = 0;
     uint32_t LevelCount = 0;
     uint32_t BaseArrayLayer = 0;
@@ -157,7 +136,7 @@ struct RHIPipelineBarrierInfo
         ERHIImageLayout newLayout,
         RHIPipelineStageFlags srcPipelineStage,
         RHIPipelineStageFlags dstPipelineStage,
-        ERHIImageAspectFlag AspectMask)
+        RHIImageAspectFlags AspectMask)
         : Type(EType::Texture)
         , Texture(texture)
         , SrcAcessFlag(srcAcessFlag)

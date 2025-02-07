@@ -371,7 +371,7 @@ Ref<RHITexture2D> VulkanRHI::CreateRHITexture2D(RHITexture2DCreateDesc desc)
     imageCreateInfo.arrayLayers = 1;
     imageCreateInfo.samples = VK_SAMPLE_COUNT_1_BIT;
     imageCreateInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
-    imageCreateInfo.usage = Util::ConvertERHITextureUsageFlagsToVkImageUsageFlags(desc.Usage);
+    imageCreateInfo.usage = Util::ConvertRHITextureUsageFlagsToVkImageUsageFlags(desc.Usage);
     imageCreateInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
     imageCreateInfo.queueFamilyIndexCount = 0;
     imageCreateInfo.pQueueFamilyIndices = nullptr;
@@ -1117,15 +1117,15 @@ void VulkanRHI::CmdPipelineBarrier(Ref<RHICommandBuffer> cmdBuffer, RHIPipelineB
         VkImageMemoryBarrier barrier;
         barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
         barrier.pNext = nullptr;
-        barrier.srcAccessMask = Util::ConvertERHIAccessFlagToVkAccessFlags(barrierInfo.SrcAcessFlag);
-        barrier.dstAccessMask = Util::ConvertERHIAccessFlagToVkAccessFlags(barrierInfo.DstAcessFlag);
+        barrier.srcAccessMask = Util::ConvertRHIAccessFlagsToVkAccessFlags(barrierInfo.SrcAcessFlag);
+        barrier.dstAccessMask = Util::ConvertRHIAccessFlagsToVkAccessFlags(barrierInfo.DstAcessFlag);
         barrier.oldLayout = Util::ConvertERHIImageLayoutToVkImageLayout(barrierInfo.OldLayout);
         barrier.newLayout = Util::ConvertERHIImageLayoutToVkImageLayout(barrierInfo.NewLayout);
         barrier.srcQueueFamilyIndex = barrierInfo.SrcQueueFamilyIndex;
         barrier.dstQueueFamilyIndex = barrierInfo.DstQueueFamilyIndex;
         barrier.image = texture->m_Image;
         barrier.subresourceRange.aspectMask =
-            Util::ConvertERHIImageAspectFlagToVkImageAspectFlags(barrierInfo.AspectMask);
+            Util::ConvertRHIImageAspectFlagsToVkImageAspectFlags(barrierInfo.AspectMask);
         barrier.subresourceRange.baseMipLevel = barrierInfo.BaseMipLevel;
         barrier.subresourceRange.levelCount = barrierInfo.LevelCount;
         barrier.subresourceRange.baseArrayLayer = barrierInfo.BaseArrayLayer;
