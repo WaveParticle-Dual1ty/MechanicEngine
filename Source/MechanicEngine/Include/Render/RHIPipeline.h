@@ -1,6 +1,5 @@
 ﻿#pragma once
 #include <vector>
-#include "RHIResources.h"
 #include "RHIDescriptorSet.h"
 #include "RHIShaders.h"
 #include "RHIRenderPass.h"

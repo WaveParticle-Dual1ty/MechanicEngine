@@ -3,7 +3,6 @@
 #include "MechanicEngine/Include/Core/Ptr.h"
 #include "MechanicEngine/Include/Application/Layer.h"
 #include "MechanicEngine/Include/Render/RHI.h"
-#include "MechanicEngine/Include/Render/RHIResources.h"
 #include "MechanicEngine/Include/Window/Window.h"
 
 namespace ME

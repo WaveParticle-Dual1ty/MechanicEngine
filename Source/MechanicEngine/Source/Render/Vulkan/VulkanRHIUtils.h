@@ -4,7 +4,6 @@
 #include "MechanicEngine/Include/Render/RHIEnums.h"
 #include "MechanicEngine/Include/Render/RHIPixelFormat.h"
 #include "MechanicEngine/Include/Render/RHIStruct.h"
-#include "MechanicEngine/Include/Render/RHIResources.h"
 #include "MechanicEngine/Include/Render/RHIBuffer.h"
 #include "MechanicEngine/Include/Render/RHITexture.h"
 #include "MechanicEngine/Include/Render/RHIPipeline.h"

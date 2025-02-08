@@ -1,7 +1,6 @@
 ﻿#pragma once
 #include <cstdint>
 #include "RHI.h"
-#include "RHIResources.h"
 #include "RHIFramebuffer.h"
 
 namespace ME

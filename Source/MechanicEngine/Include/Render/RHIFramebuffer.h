@@ -3,7 +3,6 @@
 #include <vector>
 #include "MechanicEngine/Include/Core/Ptr.h"
 #include "RHIPixelFormat.h"
-#include "RHIResources.h"
 #include "RHITexture.h"
 #include "RHIRenderPass.h"
 

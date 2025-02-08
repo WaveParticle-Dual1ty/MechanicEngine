@@ -1,11 +1,5 @@
 ﻿#pragma once
 #include <cstdint>
-#include <string>
-#include "RHIResources.h"
-#include "RHIEnums.h"
-#include "RHIBuffer.h"
-#include "RHITexture.h"
-#include "RHIFramebuffer.h"
 
 namespace ME
 {
@@ -49,76 +43,48 @@ struct RHIColorClearValue
     float A = 0;
 };
 
-struct RHISwapchainInfo
+struct RHIViewport
 {
-    RHIExtend2D Extend;
-    ERHIPixelFormat PixelFormat = ERHIPixelFormat::PF_Unknown;
-};
+    float X = 0;
+    float Y = 0;
+    float Width = 0;
+    float Height = 0;
+    float MinDepth = 0;
+    float MaxDepth = 1;
 
-struct RHIRenderPassBeginInfo
-{
-    RHIRenderArea RenderArea;
-    RHIColorClearValue ColorClearValue;
-    Ref<RHIRenderPass> RenderPass;
-    Ref<RHIFramebuffer> Framebuffer;
-};
-
-struct RHIPipelineBarrierInfo
-{
-    enum class EType
-    {
-        Memory,
-        Buffer,
-        Texture,
-    };
-
-    EType Type = EType::Memory;
-
-    Ref<RHIBuffer> Buffer;
-    Ref<RHITexture> Texture;
-
-    RHIAccessFlags SrcAcessFlag = RHI_ACCESS_NONE;
-    RHIAccessFlags DstAcessFlag = RHI_ACCESS_NONE;
-    ERHIImageLayout OldLayout = ERHIImageLayout::RHI_IMAGE_LAYOUT_UNDEFINED;
-    ERHIImageLayout NewLayout = ERHIImageLayout::RHI_IMAGE_LAYOUT_UNDEFINED;
-    RHIPipelineStageFlags SrcPipelineStage = RHI_PIPELINE_STAGE_NONE;
-    RHIPipelineStageFlags DstPipelineStage = RHI_PIPELINE_STAGE_NONE;
-
-    uint32_t SrcQueueFamilyIndex = 0;
-    uint32_t DstQueueFamilyIndex = 0;
-
-    RHIImageAspectFlags AspectMask = RHI_IMAGE_ASPECT_NONE;
-    uint32_t BaseMipLevel = 0;
-    uint32_t LevelCount = 0;
-    uint32_t BaseArrayLayer = 0;
-    uint32_t LayerCount = 0;
-
-    RHIPipelineBarrierInfo(
-        Ref<RHITexture> texture,
-        RHIAccessFlags srcAcessFlag,
-        RHIAccessFlags dstAcessFlag,
-        ERHIImageLayout oldLayout,
-        ERHIImageLayout newLayout,
-        RHIPipelineStageFlags srcPipelineStage,
-        RHIPipelineStageFlags dstPipelineStage,
-        RHIImageAspectFlags AspectMask)
-        : Type(EType::Texture)
-        , Texture(texture)
-        , SrcAcessFlag(srcAcessFlag)
-        , DstAcessFlag(dstAcessFlag)
-        , OldLayout(oldLayout)
-        , NewLayout(newLayout)
-        , SrcPipelineStage(srcPipelineStage)
-        , DstPipelineStage(dstPipelineStage)
-        , SrcQueueFamilyIndex(0)
-        , DstQueueFamilyIndex(0)
-        , AspectMask(AspectMask)
-        , BaseMipLevel(0)
-        , LevelCount(1)
-        , BaseArrayLayer(0)
-        , LayerCount(1)
+    RHIViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height)
+        : X(static_cast<float>(x))
+        , Y(static_cast<float>(y))
+        , Width(static_cast<float>(width))
+        , Height(static_cast<float>(height))
     {
     }
+
+    RHIViewport(float x, float y, float width, float height)
+        : X(x)
+        , Y(y)
+        , Width(width)
+        , Height(height)
+    {
+    }
+
+    RHIViewport(float x, float y, float width, float height, float minDepth, float maxDepth)
+        : X(x)
+        , Y(y)
+        , Width(width)
+        , Height(height)
+        , MinDepth(minDepth)
+        , MaxDepth(maxDepth)
+    {
+    }
+};
+
+struct RHIScissor
+{
+    int32_t OffsetX;
+    int32_t OffsetY;
+    uint32_t Width = 0;
+    uint32_t Height = 0;
 };
 
 }  //namespace ME

@@ -3,7 +3,6 @@
 #include "MechanicEngine/Include/Core/Ptr.h"
 #include "MechanicEngine/Include/Window/Window.h"
 #include "RHIStruct.h"
-#include "RHIResources.h"
 #include "RHITexture.h"
 #include "RHIFramebuffer.h"
 #include "RHIBuffer.h"
@@ -12,9 +11,19 @@
 #include "RHIShaders.h"
 #include "RHIRenderPass.h"
 #include "RHICommandBuffer.h"
+#include "RHIPipelineBarrier.h"
+#include "RHISwapchain.h"
 
 namespace ME
 {
+struct RHIRenderPassBeginInfo
+{
+    RHIRenderArea RenderArea;
+    RHIColorClearValue ColorClearValue;
+    Ref<RHIRenderPass> RenderPass;
+    Ref<RHIFramebuffer> Framebuffer;
+};
+
 class RHI
 {
 public:
