@@ -1,7 +1,6 @@
 ﻿#pragma once
 #include <cstdint>
 #include "RHIEnums.h"
-#include "RHIPixelFormat.h"
 
 namespace ME
 {

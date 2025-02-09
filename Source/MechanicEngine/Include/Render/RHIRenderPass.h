@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "RHIPixelFormat.h"
+#include "RHIEnums.h"
 
 namespace ME
 {

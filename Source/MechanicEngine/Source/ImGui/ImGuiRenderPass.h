@@ -1,6 +1,5 @@
 ﻿#pragma once
 #include "MechanicEngine/Include/Render/RenderPass.h"
-#include "MechanicEngine/Include/Render/RHIPixelFormat.h"
 
 namespace ME
 {
