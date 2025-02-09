@@ -710,6 +710,77 @@ VkBufferUsageFlags ConvertRHIBufferUsageFlagsToVkBufferUsageFlags(RHIBufferUsage
     return res;
 }
 
+RHIAccessFlags ConvertERHITextureUsageToRHIAccessFlags(ERHITextureUsage usage)
+{
+    RHIAccessFlags res = 0;
+
+    switch (usage)
+    {
+        case ERHITextureUsage::None:
+            break;
+        case ERHITextureUsage::TransferSrc:
+            res |= RHI_ACCESS_TRANSFER_READ_BIT;
+            break;
+        case ERHITextureUsage::TransferDst:
+            res |= RHI_ACCESS_TRANSFER_WRITE_BIT;
+            break;
+        case ERHITextureUsage::Sampled:
+            res |= RHI_ACCESS_SHADER_READ_BIT;
+            break;
+        case ERHITextureUsage::Storage:
+            res |= RHI_ACCESS_SHADER_READ_BIT;
+            res |= RHI_ACCESS_SHADER_WRITE_BIT;
+            break;
+        case ERHITextureUsage::ColorAttachment:
+            res |= RHI_ACCESS_COLOR_ATTACHMENT_READ_BIT;
+            res |= RHI_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+            break;
+        case ERHITextureUsage::DepthStencilAttachment:
+            res |= RHI_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT;
+            res |= RHI_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
+            break;
+        case ERHITextureUsage::TransientAttachment:
+            break;
+        case ERHITextureUsage::InputAttachment:
+            res |= RHI_ACCESS_INPUT_ATTACHMENT_READ_BIT;
+            break;
+        default:
+            ME_ASSERT(false, "Not support ERHITextureUsage now");
+            break;
+    }
+
+    return res;
+}
+
+ERHIImageLayout ConvertERHITextureUsageToERHIImageLayout(ERHITextureUsage usage)
+{
+    switch (usage)
+    {
+        case ERHITextureUsage::None:
+            return ERHIImageLayout::RHI_IMAGE_LAYOUT_UNDEFINED;
+        case ERHITextureUsage::TransferSrc:
+            return ERHIImageLayout::RHI_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
+        case ERHITextureUsage::TransferDst:
+            return ERHIImageLayout::RHI_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+        case ERHITextureUsage::Sampled:
+            return ERHIImageLayout::RHI_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+        case ERHITextureUsage::Storage:
+            return ERHIImageLayout::RHI_IMAGE_LAYOUT_GENERAL;
+        case ERHITextureUsage::ColorAttachment:
+            return ERHIImageLayout::RHI_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+        case ERHITextureUsage::DepthStencilAttachment:
+            return ERHIImageLayout::RHI_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+        case ERHITextureUsage::TransientAttachment:
+            ME_ASSERT(false, "Not support TransientAttachment");
+            return ERHIImageLayout::RHI_IMAGE_LAYOUT_UNDEFINED;
+        case ERHITextureUsage::InputAttachment:
+            return ERHIImageLayout::RHI_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+        default:
+            ME_ASSERT(false, "Not support ERHITextureUsage now");
+            return ERHIImageLayout::RHI_IMAGE_LAYOUT_UNDEFINED;
+    }
+}
+
 }  //namespace Util
 
 }  //namespace ME

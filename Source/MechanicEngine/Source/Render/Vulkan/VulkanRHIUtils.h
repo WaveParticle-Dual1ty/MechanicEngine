@@ -6,6 +6,7 @@
 #include "MechanicEngine/Include/Render/RHIBuffer.h"
 #include "MechanicEngine/Include/Render/RHITexture.h"
 #include "MechanicEngine/Include/Render/RHIPipeline.h"
+#include "MechanicEngine/Include/Render/RHITransition.h"
 
 namespace ME
 {
@@ -29,6 +30,9 @@ VkImageUsageFlags ConvertRHITextureUsageFlagsToVkImageUsageFlags(RHITextureUsage
 VkMemoryPropertyFlags ConvertRHIMemoryPropertyFlagsToVkMemoryPropertyFlags(RHIMemoryPropertyFlags flags);
 VkShaderStageFlags ConvertRHIShaderStageFlagsToVkShaderStageFlags(RHIShaderStageFlags flags);
 VkBufferUsageFlags ConvertRHIBufferUsageFlagsToVkBufferUsageFlags(RHIBufferUsageFlags flags);
+
+RHIAccessFlags ConvertERHITextureUsageToRHIAccessFlags(ERHITextureUsage usage);
+ERHIImageLayout ConvertERHITextureUsageToERHIImageLayout(ERHITextureUsage usage);
 
 }  //namespace Util
 

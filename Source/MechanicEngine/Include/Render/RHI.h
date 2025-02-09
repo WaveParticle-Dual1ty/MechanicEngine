@@ -13,6 +13,7 @@
 #include "RHICommandBuffer.h"
 #include "RHIPipelineBarrier.h"
 #include "RHISwapchain.h"
+#include "RHITransition.h"
 
 namespace ME
 {
@@ -82,6 +83,7 @@ public:
     virtual void CmdEndRenderPass(Ref<RHICommandBuffer> cmdBuffer) = 0;
     virtual void CmdClearColor(Ref<RHICommandBuffer> cmdBuffer, Ref<RHITexture2D> texture, RHIColor color) = 0;
     virtual void CmdPipelineBarrier(Ref<RHICommandBuffer> cmdBuffer, RHIPipelineBarrierInfo barrierInfo) = 0;
+    virtual void CmdTransition(Ref<RHICommandBuffer> cmdBuffer, RHITransition transition) = 0;
     virtual void CmdCopyTexture(Ref<RHICommandBuffer> cmdBuffer, Ref<RHITexture2D> src, Ref<RHITexture2D> dst) = 0;
     virtual void CmdBindGraphicPipeline(Ref<RHICommandBuffer> cmdBuffer, Ref<RHIGraphicPipeline> pipeline) = 0;
     virtual void CmdSetViewport(Ref<RHICommandBuffer> cmdBuffer, RHIViewport viewport) = 0;

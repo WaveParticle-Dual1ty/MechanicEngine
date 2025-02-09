@@ -1145,6 +1145,57 @@ void VulkanRHI::CmdPipelineBarrier(Ref<RHICommandBuffer> cmdBuffer, RHIPipelineB
     }
 }
 
+void VulkanRHI::CmdTransition(Ref<RHICommandBuffer> cmdBuffer, RHITransition transition)
+{
+    Ref<VulkanRHICommandBuffer> vkCmdBuffer = std::dynamic_pointer_cast<VulkanRHICommandBuffer>(cmdBuffer);
+
+    if (transition.Type == RHITransition::EType::Texture)
+    {
+        Ref<VulkanRHITexture2D> texture =
+            std::dynamic_pointer_cast<VulkanRHITexture2D>(transition.TextureTransiton.Texture);
+
+        RHIAccessFlags srcRHIAcess =
+            Util::ConvertERHITextureUsageToRHIAccessFlags(transition.TextureTransiton.OldUsage);
+        RHIAccessFlags dstRHIAcess =
+            Util::ConvertERHITextureUsageToRHIAccessFlags(transition.TextureTransiton.NewUsage);
+        VkAccessFlags srcAcess = Util::ConvertRHIAccessFlagsToVkAccessFlags(srcRHIAcess);
+        VkAccessFlags dstAcess = Util::ConvertRHIAccessFlagsToVkAccessFlags(dstRHIAcess);
+        ERHIImageLayout srcRHILayout =
+            Util::ConvertERHITextureUsageToERHIImageLayout(transition.TextureTransiton.OldUsage);
+        ERHIImageLayout dstRHILayout =
+            Util::ConvertERHITextureUsageToERHIImageLayout(transition.TextureTransiton.NewUsage);
+        VkImageLayout srcLayout = Util::ConvertERHIImageLayoutToVkImageLayout(srcRHILayout);
+        VkImageLayout dstLayout = Util::ConvertERHIImageLayoutToVkImageLayout(dstRHILayout);
+
+        VkImageMemoryBarrier barrier;
+        barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+        barrier.pNext = nullptr;
+        barrier.srcAccessMask = srcRHIAcess;
+        barrier.dstAccessMask = dstRHIAcess;
+        barrier.oldLayout = srcLayout;
+        barrier.newLayout = dstLayout;
+        barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+        barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+        barrier.image = texture->m_Image;
+        barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        barrier.subresourceRange.baseMipLevel = 0;
+        barrier.subresourceRange.levelCount = 1;
+        barrier.subresourceRange.baseArrayLayer = 0;
+        barrier.subresourceRange.layerCount = 1;
+
+        VkPipelineStageFlags srcPipelineStage =
+            Util::ConvertRHIPipelineStageFlagsToVkPipelineStageFlags(transition.SrcStage);
+        VkPipelineStageFlags dstPipelineStage =
+            Util::ConvertRHIPipelineStageFlagsToVkPipelineStageFlags(transition.DstStage);
+        vkCmdPipelineBarrier(
+            vkCmdBuffer->CommandBuffer, srcPipelineStage, dstPipelineStage, 0, 0, nullptr, 0, nullptr, 1, &barrier);
+    }
+    else
+    {
+        ME_ASSERT(false, "Not support RHITransition::EType type now");
+    }
+}
+
 void VulkanRHI::CmdCopyTexture(Ref<RHICommandBuffer> cmdBuffer, Ref<RHITexture2D> src, Ref<RHITexture2D> dst)
 {
     Ref<VulkanRHICommandBuffer> vulkanCmdBuffer = std::dynamic_pointer_cast<VulkanRHICommandBuffer>(cmdBuffer);

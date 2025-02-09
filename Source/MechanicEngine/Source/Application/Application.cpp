@@ -92,12 +92,11 @@ void Application::Run()
 
         Ref<RHITexture2D> backTexture = m_RHI->GetCurrentBackTexture();
 
-        m_RHI->CmdPipelineBarrier(
-            cmdBuffer, RHIPipelineBarrierInfo(
-                           backTexture, RHI_ACCESS_NONE, RHI_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
-                           ERHIImageLayout::RHI_IMAGE_LAYOUT_UNDEFINED,
-                           ERHIImageLayout::RHI_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, RHI_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
-                           RHI_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, RHI_IMAGE_ASPECT_COLOR_BIT));
+        m_RHI->CmdTransition(
+            cmdBuffer, RHITransition(
+                           RHI_PIPELINE_STAGE_TOP_OF_PIPE_BIT, RHI_PIPELINE_STAGE_TRANSFER_BIT, backTexture,
+                           ERHITextureUsage::None, ERHITextureUsage::TransferDst));
+
         m_RHI->CmdClearColor(cmdBuffer, backTexture, RHIColor(0, 0, 0, 1));
 
         if (m_EnableUI)
@@ -106,13 +105,10 @@ void Application::Run()
 
             Ref<RHITexture2D> uiTexture = m_ImGuiRenderPass->GetFramebuffer()->GetTargetTexture(0);
 
-            m_RHI->CmdPipelineBarrier(
-                cmdBuffer, RHIPipelineBarrierInfo(
-                               uiTexture, RHI_ACCESS_NONE, RHI_ACCESS_TRANSFER_READ_BIT,
-                               ERHIImageLayout::RHI_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
-                               ERHIImageLayout::RHI_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
+            m_RHI->CmdTransition(
+                cmdBuffer, RHITransition(
                                RHI_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, RHI_PIPELINE_STAGE_TRANSFER_BIT,
-                               RHI_IMAGE_ASPECT_COLOR_BIT));
+                               uiTexture, ERHITextureUsage::ColorAttachment, ERHITextureUsage::TransferSrc));
 
             m_RHI->CmdCopyTexture(cmdBuffer, uiTexture, backTexture);
         }

@@ -70,6 +70,7 @@ public:
     virtual void CmdEndRenderPass(Ref<RHICommandBuffer> cmdBuffer) override;
     virtual void CmdClearColor(Ref<RHICommandBuffer> cmdBuffer, Ref<RHITexture2D> texture, RHIColor color) override;
     virtual void CmdPipelineBarrier(Ref<RHICommandBuffer> cmdBuffer, RHIPipelineBarrierInfo barrierInfo) override;
+    virtual void CmdTransition(Ref<RHICommandBuffer> cmdBuffer, RHITransition transition) override;
     virtual void CmdCopyTexture(Ref<RHICommandBuffer> cmdBuffer, Ref<RHITexture2D> src, Ref<RHITexture2D> dst) override;
     virtual void CmdBindGraphicPipeline(Ref<RHICommandBuffer> cmdBuffer, Ref<RHIGraphicPipeline> pipeline) override;
     virtual void CmdSetViewport(Ref<RHICommandBuffer> cmdBuffer, RHIViewport viewport) override;
