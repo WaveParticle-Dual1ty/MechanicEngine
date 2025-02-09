@@ -268,7 +268,9 @@ RHISwapchainInfo VulkanRHI::GetSwapchainInfo()
 void* VulkanRHI::CreateImTextureID(Ref<RHITexture2D> texture)
 {
     Ref<VulkanRHITexture2D> vulkanTex = std::dynamic_pointer_cast<VulkanRHITexture2D>(texture);
-    VkImageLayout imageLayout = VK_IMAGE_LAYOUT_GENERAL;
+    //VkImageLayout imageLayout = VK_IMAGE_LAYOUT_GENERAL;
+    //VkImageLayout imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+    VkImageLayout imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
     VkDescriptorSet descriptorSet = ImGui_ImplVulkan_AddTexture(m_Sampler, vulkanTex->m_ImageView, imageLayout);
     return descriptorSet;
 }

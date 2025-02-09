@@ -269,16 +269,7 @@ bool TestRenderPass::Draw(Ref<RHICommandBuffer> cmdBuffer)
 
     m_RHI->CmdPushEvent(cmdBuffer, "TestRenderPass", RHIColor(1, 0, 0, 1));
 
-#if 1
-    //m_RHI->CmdPipelineBarrier(
-    //    cmdBuffer,
-    //    RHIPipelineBarrierInfo(
-    //        texture, ERHIAccessFlag::RHI_ACCESS_NONE, ERHIAccessFlag::RHI_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
-    //        ERHIImageLayout::RHI_IMAGE_LAYOUT_UNDEFINED, ERHIImageLayout::RHI_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
-    //        ERHIPipelineStageFlag::RHI_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
-    //        ERHIPipelineStageFlag::RHI_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-    //        ERHIImageAspectFlag::RHI_IMAGE_ASPECT_COLOR_BIT));
-
+#if 0
     m_RHI->CmdTransition(
         cmdBuffer, RHITransition(
                        RHI_PIPELINE_STAGE_TOP_OF_PIPE_BIT, RHI_PIPELINE_STAGE_TRANSFER_BIT, texture,
@@ -287,12 +278,11 @@ bool TestRenderPass::Draw(Ref<RHICommandBuffer> cmdBuffer)
     m_RHI->CmdClearColor(
         cmdBuffer, texture, RHIColor(m_ClearColor[0], m_ClearColor[1], m_ClearColor[2], m_ClearColor[3]));
 
-    m_RHI->CmdPipelineBarrier(
-        cmdBuffer, RHIPipelineBarrierInfo(
-                       texture, RHI_ACCESS_COLOR_ATTACHMENT_WRITE_BIT, RHI_ACCESS_COLOR_ATTACHMENT_READ_BIT,
-                       ERHIImageLayout::RHI_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
-                       ERHIImageLayout::RHI_IMAGE_LAYOUT_GENERAL, RHI_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-                       RHI_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, RHI_IMAGE_ASPECT_COLOR_BIT));
+    m_RHI->CmdTransition(
+        cmdBuffer, RHITransition(
+                       RHI_PIPELINE_STAGE_TRANSFER_BIT, RHI_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, texture,
+                       ERHITextureUsage::TransferDst, ERHITextureUsage::Sampled));
+
 #else
     m_RHI->CmdTransition(
         cmdBuffer, RHITransition(
@@ -338,19 +328,16 @@ bool TestRenderPass::Draw(Ref<RHICommandBuffer> cmdBuffer)
     m_RHI->CmdPushConstants(
         cmdBuffer, m_Pipeline, ERHIShaderStage::RHI_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(constantData), &constantData);
 
-    //m_RHI->CmdBindDescriptorSets(cmdBuffer, m_Pipeline);
     m_RHI->CmdBindDescriptorSets(cmdBuffer, m_Pipeline, m_DescriptorSets);
 
     m_RHI->CmdDrawIndexed(cmdBuffer, 6, 1, 0, 0, 0);
 
     m_RHI->CmdEndRenderPass(cmdBuffer);
 
-    m_RHI->CmdPipelineBarrier(
-        cmdBuffer, RHIPipelineBarrierInfo(
-                       texture, RHI_ACCESS_COLOR_ATTACHMENT_WRITE_BIT, RHI_ACCESS_COLOR_ATTACHMENT_READ_BIT,
-                       ERHIImageLayout::RHI_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
-                       ERHIImageLayout::RHI_IMAGE_LAYOUT_GENERAL, RHI_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-                       RHI_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, RHI_IMAGE_ASPECT_COLOR_BIT));
+    m_RHI->CmdTransition(
+        cmdBuffer, RHITransition(
+                       RHI_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, RHI_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, texture,
+                       ERHITextureUsage::ColorAttachment, ERHITextureUsage::Sampled));
 #endif
 
     m_RHI->CmdPopEvent(cmdBuffer);
