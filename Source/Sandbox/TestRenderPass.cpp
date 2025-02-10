@@ -107,23 +107,12 @@ bool TestRenderPass::Initialize(uint32_t w, uint32_t h)
     range.Size = sizeof(ConstantData);
     constantRanges.push_back(range);
 
-    // SetLayout
-    std::vector<RHISetLayoutDesc> setLayoutDescs;
-    setLayoutDescs.resize(1);
-    std::vector<RHISetLayoutBinding> setLayoutBindings;
-    setLayoutBindings.resize(1);
-    setLayoutBindings[0].Binding = 0;
-    setLayoutBindings[0].DescriptorType = ERHIDescriptorType::RHI_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-    setLayoutBindings[0].ShaderStage = ERHIShaderStage::RHI_SHADER_STAGE_FRAGMENT_BIT;
-    setLayoutDescs[0].SetLayoutBindings = setLayoutBindings;
-
     RHIGraphicPipelineCreateInfo graphicPipelineCreateInfo;
     graphicPipelineCreateInfo.Shaders = shaders;
     graphicPipelineCreateInfo.VertexInputLayout = vertexInputLayout;
     graphicPipelineCreateInfo.InputAssemblyInfo = inputAssemblyInfo;
     graphicPipelineCreateInfo.RenderPass = m_RHIRenderPass;
     graphicPipelineCreateInfo.ConstantRanges = constantRanges;
-    graphicPipelineCreateInfo.SetLayoutDescs = setLayoutDescs;
     graphicPipelineCreateInfo.DescriptorSet = m_DescriptorSets;
 
     // Graphic pipeline
