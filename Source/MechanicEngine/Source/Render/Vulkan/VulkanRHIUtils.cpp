@@ -432,8 +432,7 @@ VkAccessFlags ConvertRHIAccessFlagsToVkAccessFlags(RHIAccessFlags flag)
     if (flag & RHI_ACCESS_COMMAND_PREPROCESS_WRITE_BIT_EXT)
         res |= VK_ACCESS_COMMAND_PREPROCESS_WRITE_BIT_EXT;
 
-    // todo
-    return 0;
+    return res;
 }
 
 VkPipelineStageFlags ConvertRHIPipelineStageFlagsToVkPipelineStageFlags(RHIPipelineStageFlags flag)
