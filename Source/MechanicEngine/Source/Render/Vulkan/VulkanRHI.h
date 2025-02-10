@@ -43,6 +43,7 @@ public:
     virtual Ref<RHIBuffer> CreateRHIBuffer(RHIBufferCreateDesc createDesc) override;
     virtual Ref<RHITexture2D> CreateRHITexture2D(RHITexture2DCreateDesc desc) override;
     virtual Ref<RHIRenderPass> CreateRHIRenderPass(RHIRenderPassCreateDesc desc) override;
+    virtual Ref<RHIRenderPass> CreateRHIRenderPass2(RHIRenderPassCreateDesc2 desc) override;
     virtual Ref<RHIFramebuffer> CreateRHIFramebuffer(
         uint32_t width,
         uint32_t height,

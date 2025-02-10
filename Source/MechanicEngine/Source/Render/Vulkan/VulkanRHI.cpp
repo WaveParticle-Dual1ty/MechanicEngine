@@ -495,6 +495,11 @@ Ref<RHIRenderPass> VulkanRHI::CreateRHIRenderPass(RHIRenderPassCreateDesc desc)
     return renderPass;
 }
 
+Ref<RHIRenderPass> VulkanRHI::CreateRHIRenderPass2(RHIRenderPassCreateDesc2 desc)
+{
+    return Ref<RHIRenderPass>();
+}
+
 Ref<RHIFramebuffer> VulkanRHI::CreateRHIFramebuffer(
     uint32_t width,
     uint32_t height,
