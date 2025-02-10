@@ -646,7 +646,7 @@ Ref<RHISampler> VulkanRHI::CreateRHISampler(RHISamplerCreateInfo createInfo)
     return rhiSampler;
 }
 
-Ref<RHIGraphicPipeline> VulkanRHI::CreateGraphicPipeline(RHIGraphicPipelineCreateInfo createInfo)
+Ref<RHIGraphicPipeline> VulkanRHI::CreateRHIGraphicPipeline(RHIGraphicPipelineCreateInfo createInfo)
 {
     // shader
     std::vector<VkPipelineShaderStageCreateInfo> pipelineShaderStages;

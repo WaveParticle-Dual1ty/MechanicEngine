@@ -116,10 +116,10 @@ bool TestRenderPass::Initialize(uint32_t w, uint32_t h)
     graphicPipelineCreateInfo.DescriptorSet = m_DescriptorSets;
 
     // Graphic pipeline
-    m_Pipeline = m_RHI->CreateGraphicPipeline(graphicPipelineCreateInfo);
+    m_Pipeline = m_RHI->CreateRHIGraphicPipeline(graphicPipelineCreateInfo);
     if (!m_Pipeline)
     {
-        SANDBOX_LOG_ERROR("RHI::CreateGraphicPipeline fail");
+        SANDBOX_LOG_ERROR("RHI::CreateRHIGraphicPipeline fail");
         return false;
     }
 

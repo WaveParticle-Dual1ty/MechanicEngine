@@ -64,7 +64,7 @@ public:
     virtual Ref<RHIShader> CreateRHIShader(RHIShaderCreateInfo createInfo) = 0;
     virtual Ref<RHIDescriptorSet> CreateRHIDescriptorSet(RHIDescriptorSetCreateInfo createInfo) = 0;
     virtual Ref<RHISampler> CreateRHISampler(RHISamplerCreateInfo createInfo) = 0;
-    virtual Ref<RHIGraphicPipeline> CreateGraphicPipeline(RHIGraphicPipelineCreateInfo createInfo) = 0;
+    virtual Ref<RHIGraphicPipeline> CreateRHIGraphicPipeline(RHIGraphicPipelineCreateInfo createInfo) = 0;
 
     virtual void UpdateDescriptorSets(
         Ref<RHIDescriptorSet> RelateDescriptorSet,
