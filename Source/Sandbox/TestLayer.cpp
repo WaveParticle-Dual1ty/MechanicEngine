@@ -7,6 +7,8 @@
 #include "MechanicEngine/Include/Event/Input.h"
 #include "MechanicEngine/Include/Event/EventUtils.h"
 
+using namespace ME;
+
 TestLayer::TestLayer()
     : Layer("TestLayer")
 {
