@@ -6,11 +6,6 @@
 
 namespace ME
 {
-struct RHIRenderPassCreateDesc
-{
-    ERHIPixelFormat PixelFormat = ERHIPixelFormat::PF_Unknown;
-};
-
 struct RHIAttachment
 {
     ERHIPixelFormat Format = ERHIPixelFormat::PF_Unknown;
@@ -26,13 +21,13 @@ struct RHIAttachment
 };
 
 // Only support one subpass
-struct RHIRenderPassCreateDesc2
+struct RHIRenderPassCreateDesc
 {
     std::vector<RHIAttachment> Attachments;
 
-    RHIRenderPassCreateDesc2() = default;
+    RHIRenderPassCreateDesc() = default;
 
-    RHIRenderPassCreateDesc2(const std::initializer_list<RHIAttachment>& attachments)
+    RHIRenderPassCreateDesc(const std::initializer_list<RHIAttachment>& attachments)
         : Attachments(attachments)
     {
     }

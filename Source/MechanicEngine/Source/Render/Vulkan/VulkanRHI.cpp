@@ -444,59 +444,6 @@ Ref<RHITexture2D> VulkanRHI::CreateRHITexture2D(RHITexture2DCreateDesc desc)
 
 Ref<RHIRenderPass> VulkanRHI::CreateRHIRenderPass(RHIRenderPassCreateDesc desc)
 {
-    static_cast<void>(desc);
-
-    VkAttachmentDescription attachmentDesc;
-    attachmentDesc.flags = 0;
-    attachmentDesc.format = Util::ConvertERHIPixelFormatToVkFormat(desc.PixelFormat);
-    attachmentDesc.samples = VK_SAMPLE_COUNT_1_BIT;
-    attachmentDesc.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-    attachmentDesc.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
-    attachmentDesc.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-    attachmentDesc.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-    attachmentDesc.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-    attachmentDesc.finalLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-
-    VkAttachmentReference colorAttachRef;
-    colorAttachRef.attachment = 0;
-    colorAttachRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-
-    VkSubpassDescription subpassDesc;
-    subpassDesc.flags = 0;
-    subpassDesc.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
-    subpassDesc.inputAttachmentCount = 0;
-    subpassDesc.pInputAttachments = nullptr;
-    subpassDesc.colorAttachmentCount = 1;
-    subpassDesc.pColorAttachments = &colorAttachRef;
-    subpassDesc.pResolveAttachments = nullptr;
-    subpassDesc.pDepthStencilAttachment = nullptr;
-    subpassDesc.preserveAttachmentCount = 0;
-    subpassDesc.pPreserveAttachments = nullptr;
-
-    VkRenderPassCreateInfo renderPassCreateInfo;
-    renderPassCreateInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
-    renderPassCreateInfo.pNext = nullptr;
-    renderPassCreateInfo.flags = 0;
-    renderPassCreateInfo.attachmentCount = 1;
-    renderPassCreateInfo.pAttachments = &attachmentDesc;
-    renderPassCreateInfo.subpassCount = 1;
-    renderPassCreateInfo.pSubpasses = &subpassDesc;
-    renderPassCreateInfo.dependencyCount = 0;
-    renderPassCreateInfo.pDependencies = nullptr;
-
-    Ref<VulkanRHIRenderPass> renderPass = CreateRef<VulkanRHIRenderPass>();
-    VkResult res = vkCreateRenderPass(m_Device, &renderPassCreateInfo, nullptr, &renderPass->RenderPass);
-    if (res != VK_SUCCESS)
-    {
-        RENDER_LOG_ERROR("vkCreateRenderPass fail");
-        return nullptr;
-    }
-
-    return renderPass;
-}
-
-Ref<RHIRenderPass> VulkanRHI::CreateRHIRenderPass2(RHIRenderPassCreateDesc2 desc)
-{
     ME_ASSERT(desc.Attachments.size() != 0, "Attachments num is zero");
 
     std::vector<VkAttachmentDescription> attachmentDescs;

@@ -269,7 +269,7 @@ bool TestRenderer::CreateRenderResourece()
 bool TestRenderer::CreateGraphicPass()
 {
     // render pass desc
-    RHIRenderPassCreateDesc2 renderPassDesc = {
+    RHIRenderPassCreateDesc renderPassDesc = {
         {ERHIPixelFormat::PF_R8G8B8A8_UNORM, ERHITextureUsage::ColorAttachment}
     };
 

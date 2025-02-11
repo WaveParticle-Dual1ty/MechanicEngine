@@ -15,10 +15,10 @@ bool GraphicsPass::BuildGraphicsPass(GraphicsPassBuildInfo createInfo)
     m_Name = createInfo.Name;
 
     // Create render pass
-    m_RenderPass = m_RHI->CreateRHIRenderPass2(createInfo.RenderPassDesc);
+    m_RenderPass = m_RHI->CreateRHIRenderPass(createInfo.RenderPassDesc);
     if (!m_RenderPass)
     {
-        RENDER_LOG_ERROR("RHI::CreateRHIRenderPass2 fail");
+        RENDER_LOG_ERROR("RHI::CreateRHIRenderPass fail");
         return false;
     }
 

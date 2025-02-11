@@ -22,7 +22,7 @@ struct GraphicsPassPipelineStats
 struct GraphicsPassBuildInfo
 {
     std::string Name = "GraphicsPass";
-    RHIRenderPassCreateDesc2 RenderPassDesc;
+    RHIRenderPassCreateDesc RenderPassDesc;
     GraphicsPassPipelineStats PipelineStats;
 };
 
