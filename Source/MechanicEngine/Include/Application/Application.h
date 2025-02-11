@@ -54,7 +54,6 @@ private:
     bool m_WndMinimized = false;
     bool m_WndResized = false;
     double m_LastFrameTimeInSec = 0.f;
-    bool m_EnableUI = true;
 
     Ref<Window> m_Window;
     std::shared_ptr<class LayerStack> m_LayerStack;

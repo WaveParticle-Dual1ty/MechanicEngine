@@ -78,17 +78,14 @@ void Application::Run()
             layer->OnUpdate(timestep);
         }
 
-        if (m_EnableUI)
+        m_ImGuiLayer->Begin();
+
+        for (auto& layer : m_LayerStack->GetLayers())
         {
-            m_ImGuiLayer->Begin();
-
-            for (auto& layer : m_LayerStack->GetLayers())
-            {
-                layer->OnUIUpdate();
-            }
-
-            m_ImGuiLayer->End();
+            layer->OnUIUpdate();
         }
+
+        m_ImGuiLayer->End();
 
         Ref<RHITexture2D> backTexture = m_RHI->GetCurrentBackTexture();
 
@@ -99,19 +96,16 @@ void Application::Run()
 
         m_RHI->CmdClearColor(cmdBuffer, backTexture, RHIColor(0, 0, 0, 1));
 
-        if (m_EnableUI)
-        {
-            m_ImGuiRenderPass->Draw(cmdBuffer);
+        m_ImGuiRenderPass->Draw(cmdBuffer);
 
-            Ref<RHITexture2D> uiTexture = m_ImGuiRenderPass->GetFramebuffer()->GetTargetTexture(0);
+        Ref<RHITexture2D> uiTexture = m_ImGuiRenderPass->GetFramebuffer()->GetTargetTexture(0);
 
-            m_RHI->CmdTransition(
-                cmdBuffer, RHITransition(
-                               RHI_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, RHI_PIPELINE_STAGE_TRANSFER_BIT,
-                               uiTexture, ERHITextureUsage::ColorAttachment, ERHITextureUsage::TransferSrc));
+        m_RHI->CmdTransition(
+            cmdBuffer, RHITransition(
+                           RHI_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, RHI_PIPELINE_STAGE_TRANSFER_BIT, uiTexture,
+                           ERHITextureUsage::ColorAttachment, ERHITextureUsage::TransferSrc));
 
-            m_RHI->CmdCopyTexture(cmdBuffer, uiTexture, backTexture);
-        }
+        m_RHI->CmdCopyTexture(cmdBuffer, uiTexture, backTexture);
 
         m_RHI->CmdPipelineBarrier(
             cmdBuffer,
@@ -301,10 +295,6 @@ void Application::UpdateLayers(Timestep timestep)
 void Application::UpdateLayersUI(Timestep timestep)
 {
     static_cast<void>(timestep);
-
-    if (m_EnableUI)
-    {
-    }
 }
 
 }  //namespace ME
