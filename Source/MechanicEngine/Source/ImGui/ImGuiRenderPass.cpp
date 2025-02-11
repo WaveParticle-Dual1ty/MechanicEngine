@@ -15,12 +15,14 @@ bool ImGuiRenderPass::Initialize(uint32_t w, uint32_t h)
 {
     FRenderPass::Initialize(w, h);
 
-    RHIRenderPassCreateDesc desc;
-    desc.PixelFormat = m_SwapchainFormat;
-    m_RHIRenderPass = m_RHI->CreateRHIRenderPass(desc);
+    RHIRenderPassCreateDesc2 renderPassDesc = {
+        {m_SwapchainFormat, ERHITextureUsage::ColorAttachment}
+    };
+
+    m_RHIRenderPass = m_RHI->CreateRHIRenderPass2(renderPassDesc);
     if (!m_RHIRenderPass)
     {
-        IMGUI_LOG_ERROR("RHI::CreateRHIRenderPass fail");
+        IMGUI_LOG_ERROR("RHI::CreateRHIRenderPass2 fail");
         return false;
     }
 
