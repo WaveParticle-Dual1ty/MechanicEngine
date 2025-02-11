@@ -15,11 +15,11 @@ TestLayer::TestLayer()
 void TestLayer::OnAttach()
 {
     m_RHI = Application::Get().GetRHI();
-    m_TestRenderPass = CreateRef<TestRenderPass>(m_RHI);
-    bool ret = m_TestRenderPass->Initialize(300, 200);
-    if (!ret)
+    m_TestRenderer = CreateRef<TestRenderer>(m_RHI);
+    bool res = m_TestRenderer->Init(300, 200);
+    if (!res)
     {
-        ME_ASSERT(false, "TestRenderPass::Initialize fail");
+        ME_ASSERT(false, "TestRenderer::Init fail");
         return;
     }
 
@@ -39,11 +39,11 @@ void TestLayer::OnUpdate(ME::Timestep timestep)
     if (size[0] != m_ViewportSize[0] || size[1] != m_ViewportSize[1])
     {
         m_ViewportSize = size;
-        m_TestRenderPass->Resize(size[0], size[1]);
+        m_TestRenderer->Resize(size[0], size[1]);
     }
 
     Ref<RHICommandBuffer> cmdBuffer = m_RHI->GetCurrentCommandBuffer();
-    m_TestRenderPass->Draw(cmdBuffer);
+    m_TestRenderer->Draw(cmdBuffer);
 }
 
 void TestLayer::OnUIUpdate()
@@ -58,8 +58,9 @@ void TestLayer::OnUIUpdate()
         viewportSize = ImGui::GetContentRegionAvail();
         m_CacheViewportSize = {(uint32_t)viewportSize.x, (uint32_t)viewportSize.y};
 
-        void* texID = m_TestRenderPass->GetTargetImTextureID();
-        ImGui::Image(texID, ImVec2(viewportSize.x, viewportSize.y), ImVec2(0, 1), ImVec2(1, 0));
+        //void* texID = m_TestRenderPass->GetTargetImTextureID();
+        void* texID = m_TestRenderer->GetTargetImTextureID();
+        ImGui::Image(texID, ImVec2(viewportSize.x, viewportSize.y), ImVec2(0, 0), ImVec2(1, 1));
 
         ImGui::End();
     }
@@ -69,7 +70,6 @@ void TestLayer::OnUIUpdate()
 
         static std::array<float, 4> color = {0, 0, 0, 1};
         ImGui::ColorEdit4("Color", color.data());
-        m_TestRenderPass->SetColor(color);
 
         ImGui::Text("Viewport size: (%.2f, %.2f)", viewportSize.x, viewportSize.y);
 

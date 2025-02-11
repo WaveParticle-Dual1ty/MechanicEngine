@@ -113,7 +113,7 @@ bool TestRenderPass::Initialize(uint32_t w, uint32_t h)
     graphicPipelineCreateInfo.InputAssemblyInfo = inputAssemblyInfo;
     graphicPipelineCreateInfo.RenderPass = m_RHIRenderPass;
     graphicPipelineCreateInfo.ConstantRanges = constantRanges;
-    graphicPipelineCreateInfo.DescriptorSet = m_DescriptorSets;
+    graphicPipelineCreateInfo.DescriptorSets = m_DescriptorSets;
 
     // Graphic pipeline
     m_Pipeline = m_RHI->CreateRHIGraphicPipeline(graphicPipelineCreateInfo);

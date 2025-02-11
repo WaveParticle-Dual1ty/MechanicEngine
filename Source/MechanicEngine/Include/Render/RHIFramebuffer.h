@@ -14,6 +14,9 @@ public:
 
 public:
     Ref<RHITexture2D> GetTargetTexture(uint32_t index);
+    const std::vector<Ref<RHITexture2D>>& GetTargetTextures() const;
+    uint32_t GetWidth() const;
+    uint32_t GetHeight() const;
 
 protected:
     uint32_t m_Width = 0;

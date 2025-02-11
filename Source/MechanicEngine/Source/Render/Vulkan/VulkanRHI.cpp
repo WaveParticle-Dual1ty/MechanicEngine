@@ -497,7 +497,70 @@ Ref<RHIRenderPass> VulkanRHI::CreateRHIRenderPass(RHIRenderPassCreateDesc desc)
 
 Ref<RHIRenderPass> VulkanRHI::CreateRHIRenderPass2(RHIRenderPassCreateDesc2 desc)
 {
-    return Ref<RHIRenderPass>();
+    ME_ASSERT(desc.Attachments.size() != 0, "Attachments num is zero");
+
+    std::vector<VkAttachmentDescription> attachmentDescs;
+    std::vector<VkAttachmentReference> attachmentReferences;
+
+    uint32_t index = 0;
+    for (auto attach : desc.Attachments)
+    {
+        VkAttachmentDescription attachmentDesc;
+        attachmentDesc.flags = 0;
+        attachmentDesc.format = Util::ConvertERHIPixelFormatToVkFormat(attach.Format);
+        attachmentDesc.samples = VK_SAMPLE_COUNT_1_BIT;
+        attachmentDesc.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+        attachmentDesc.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+        attachmentDesc.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+        attachmentDesc.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+        attachmentDesc.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+        attachmentDesc.finalLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+
+        VkAttachmentReference attachmentReference;
+        attachmentReference.attachment = index;
+        if (attach.TextureUsage == ERHITextureUsage::ColorAttachment)
+            attachmentReference.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+        else if (attach.TextureUsage == ERHITextureUsage::DepthStencilAttachment)
+            attachmentReference.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+
+        index += 1;
+
+        attachmentDescs.push_back(attachmentDesc);
+        attachmentReferences.push_back(attachmentReference);
+    }
+
+    VkSubpassDescription subpassDesc;
+    subpassDesc.flags = 0;
+    subpassDesc.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
+    subpassDesc.inputAttachmentCount = 0;
+    subpassDesc.pInputAttachments = nullptr;
+    subpassDesc.colorAttachmentCount = static_cast<uint32_t>(attachmentReferences.size());
+    subpassDesc.pColorAttachments = attachmentReferences.data();
+    subpassDesc.pResolveAttachments = nullptr;
+    subpassDesc.pDepthStencilAttachment = nullptr;
+    subpassDesc.preserveAttachmentCount = 0;
+    subpassDesc.pPreserveAttachments = nullptr;
+
+    VkRenderPassCreateInfo renderPassCreateInfo;
+    renderPassCreateInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
+    renderPassCreateInfo.pNext = nullptr;
+    renderPassCreateInfo.flags = 0;
+    renderPassCreateInfo.attachmentCount = static_cast<uint32_t>(attachmentDescs.size());
+    renderPassCreateInfo.pAttachments = attachmentDescs.data();
+    renderPassCreateInfo.subpassCount = 1;
+    renderPassCreateInfo.pSubpasses = &subpassDesc;
+    renderPassCreateInfo.dependencyCount = 0;
+    renderPassCreateInfo.pDependencies = nullptr;
+
+    Ref<VulkanRHIRenderPass> renderPass = CreateRef<VulkanRHIRenderPass>();
+    VkResult res = vkCreateRenderPass(m_Device, &renderPassCreateInfo, nullptr, &renderPass->RenderPass);
+    if (res != VK_SUCCESS)
+    {
+        RENDER_LOG_ERROR("vkCreateRenderPass fail");
+        return nullptr;
+    }
+
+    return renderPass;
 }
 
 Ref<RHIFramebuffer> VulkanRHI::CreateRHIFramebuffer(
@@ -793,13 +856,13 @@ Ref<RHIGraphicPipeline> VulkanRHI::CreateRHIGraphicPipeline(RHIGraphicPipelineCr
 
     // Set Layouts
     std::vector<VkDescriptorSetLayout> descriptorSetLayouts;
-    if (!createInfo.DescriptorSet.empty())
+    if (!createInfo.DescriptorSets.empty())
     {
-        descriptorSetLayouts.resize(createInfo.DescriptorSet.size());
-        for (size_t i = 0; i < createInfo.DescriptorSet.size(); ++i)
+        descriptorSetLayouts.resize(createInfo.DescriptorSets.size());
+        for (size_t i = 0; i < createInfo.DescriptorSets.size(); ++i)
         {
             Ref<VulkanRHIDescriptorSet> rhiDescSet =
-                std::dynamic_pointer_cast<VulkanRHIDescriptorSet>(createInfo.DescriptorSet[i]);
+                std::dynamic_pointer_cast<VulkanRHIDescriptorSet>(createInfo.DescriptorSets[i]);
             descriptorSetLayouts[i] = rhiDescSet->DescriptorSetLayout;
         }
 
@@ -849,8 +912,7 @@ Ref<RHIGraphicPipeline> VulkanRHI::CreateRHIGraphicPipeline(RHIGraphicPipelineCr
     graphicPipelineCreateInfo.pTessellationState = nullptr;
     graphicPipelineCreateInfo.pViewportState = &pipelineViewportStateCreateInfo;
     graphicPipelineCreateInfo.pRasterizationState = &pipelineRasterizationStateCreateInfo;
-    graphicPipelineCreateInfo.pMultisampleState = nullptr;
-    //graphicPipelineCreateInfo.pMultisampleState = &multisampleState;
+    graphicPipelineCreateInfo.pMultisampleState = &multisampleState;
     graphicPipelineCreateInfo.pDepthStencilState = nullptr;
     graphicPipelineCreateInfo.pColorBlendState = &colorBlend;
     graphicPipelineCreateInfo.pDynamicState = &pipelineDynamicStateCreateInfo;

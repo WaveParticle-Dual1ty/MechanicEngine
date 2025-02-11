@@ -262,4 +262,17 @@ enum class ERHIPixelFormat : uint32_t
     PF_B8G8R8A8_UNORM,
 };
 
+enum class ERHITextureUsage : uint32_t
+{
+    None = 0,
+    TransferSrc,
+    TransferDst,
+    Sampled,
+    Storage,
+    ColorAttachment,
+    DepthStencilAttachment,
+    TransientAttachment,
+    InputAttachment,
+};
+
 }  //namespace ME

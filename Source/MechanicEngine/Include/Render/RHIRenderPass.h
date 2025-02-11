@@ -13,10 +13,19 @@ struct RHIRenderPassCreateDesc
 
 struct RHIAttachment
 {
-    uint32_t Index = 0;
     ERHIPixelFormat Format = ERHIPixelFormat::PF_Unknown;
+    ERHITextureUsage TextureUsage = ERHITextureUsage::None;
+
+    RHIAttachment() = default;
+
+    RHIAttachment(ERHIPixelFormat format, ERHITextureUsage textureUsage)
+        : Format(format)
+        , TextureUsage(textureUsage)
+    {
+    }
 };
 
+// Only support one subpass
 struct RHIRenderPassCreateDesc2
 {
     std::vector<RHIAttachment> Attachments;

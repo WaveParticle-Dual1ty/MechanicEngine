@@ -7,6 +7,7 @@
 #include "MechanicEngine/Include/Event/KeyEvent.h"
 #include "MechanicEngine/Include/Event/ApplicationEvent.h"
 #include "TestRenderPass.h"
+#include "TestRenderer.h"
 
 class TestLayer : public ME::Layer
 {
@@ -26,7 +27,7 @@ private:
 
 private:
     Ref<RHI> m_RHI;
-    Ref<TestRenderPass> m_TestRenderPass;
+    Ref<TestRenderer> m_TestRenderer;
     std::array<uint32_t, 2> m_ViewportSize = {0, 0};
     std::array<uint32_t, 2> m_CacheViewportSize = {0, 0};
 };

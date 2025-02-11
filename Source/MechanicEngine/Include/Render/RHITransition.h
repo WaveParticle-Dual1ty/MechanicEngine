@@ -6,19 +6,6 @@
 
 namespace ME
 {
-enum class ERHITextureUsage : uint32_t
-{
-    None = 0,
-    TransferSrc,
-    TransferDst,
-    Sampled,
-    Storage,
-    ColorAttachment,
-    DepthStencilAttachment,
-    TransientAttachment,
-    InputAttachment,
-};
-
 struct RHIMemoryTransition
 {
 };

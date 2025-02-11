@@ -114,7 +114,7 @@ struct RHIGraphicPipelineCreateInfo
     RHIInputAssemblyInfo InputAssemblyInfo;
     Ref<RHIRenderPass> RenderPass;
     std::vector<RHIConstantRange> ConstantRanges;
-    std::vector<Ref<RHIDescriptorSet>> DescriptorSet;
+    std::vector<Ref<RHIDescriptorSet>> DescriptorSets;
 };
 
 struct RHIGraphicPipeline
