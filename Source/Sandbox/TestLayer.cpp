@@ -60,7 +60,6 @@ void TestLayer::OnUIUpdate()
         viewportSize = ImGui::GetContentRegionAvail();
         m_CacheViewportSize = {(uint32_t)viewportSize.x, (uint32_t)viewportSize.y};
 
-        //void* texID = m_TestRenderPass->GetTargetImTextureID();
         void* texID = m_TestRenderer->GetTargetImTextureID();
         ImGui::Image(texID, ImVec2(viewportSize.x, viewportSize.y), ImVec2(0, 0), ImVec2(1, 1));
 

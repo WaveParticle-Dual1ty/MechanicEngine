@@ -5,6 +5,7 @@
 #include "MechanicEngine/Include/Core/Assert.h"
 #include "MechanicEngine/Source/ImGui/ImGuiLayer.h"
 #include "MechanicEngine/Source/ImGui/ImGuiRenderPass.h"
+#include "MechanicEngine/Source/ImGui/ImGuiRenderer.h"
 #include "AppLog.h"
 #include "LayerStack.h"
 
@@ -60,10 +61,10 @@ void Application::Run()
 
             RHISwapchainInfo swapchainInfo = m_RHI->GetSwapchainInfo();
             RHIExtend2D swapchainSize = swapchainInfo.Extend;
-            ret = m_ImGuiRenderPass->Resize(swapchainSize.Width, swapchainSize.Height);
+            ret = m_ImGuiRenderer->Resize(swapchainSize.Width, swapchainSize.Height);
             if (!ret)
             {
-                APP_LOG_ERROR("ImGuiRenderPass::Resize fail");
+                APP_LOG_ERROR("ImGuiRenderer::Resize fail");
                 break;
             }
         }
@@ -78,14 +79,16 @@ void Application::Run()
             layer->OnUpdate(timestep);
         }
 
-        m_ImGuiLayer->Begin();
-
-        for (auto& layer : m_LayerStack->GetLayers())
         {
-            layer->OnUIUpdate();
-        }
+            m_ImGuiLayer->Begin();
 
-        m_ImGuiLayer->End();
+            for (auto& layer : m_LayerStack->GetLayers())
+            {
+                layer->OnUIUpdate();
+            }
+
+            m_ImGuiLayer->End();
+        }
 
         Ref<RHITexture2D> backTexture = m_RHI->GetCurrentBackTexture();
 
@@ -96,9 +99,9 @@ void Application::Run()
 
         m_RHI->CmdClearColor(cmdBuffer, backTexture, RHIColor(0, 0, 0, 1));
 
-        m_ImGuiRenderPass->Draw(cmdBuffer);
+        m_ImGuiRenderer->Draw(cmdBuffer);
 
-        Ref<RHITexture2D> uiTexture = m_ImGuiRenderPass->GetFramebuffer()->GetTargetTexture(0);
+        Ref<RHITexture2D> uiTexture = m_ImGuiRenderer->GetTargetColorTexture();
 
         m_RHI->CmdTransition(
             cmdBuffer, RHITransition(
@@ -187,17 +190,15 @@ bool Application::InitApp()
     }
 
     m_LayerStack = std::make_shared<LayerStack>();
-    //if (m_EnableUI)
     {
-        m_ImGuiRenderPass = CreateRef<ImGuiRenderPass>(m_RHI);
         RHISwapchainInfo swapchainInfo = m_RHI->GetSwapchainInfo();
-        m_ImGuiRenderPass->SetSwapchainFormat(swapchainInfo.PixelFormat);
-
         RHIExtend2D swapchainSize = swapchainInfo.Extend;
-        ret = m_ImGuiRenderPass->Initialize(swapchainSize.Width, swapchainSize.Height);
+
+        m_ImGuiRenderer = CreateRef<ImGuiRenderer>(m_RHI);
+        ret = m_ImGuiRenderer->Init(swapchainSize.Width, swapchainSize.Height, swapchainInfo.PixelFormat);
         if (!ret)
         {
-            APP_LOG_ERROR("ImGuiRenderPass::Initialize fail");
+            APP_LOG_ERROR("ImGuiRenderer::Init fail");
             return false;
         }
 
@@ -208,7 +209,7 @@ bool Application::InitApp()
             return false;
         }
 
-        ret = m_ImGuiLayer->Init(m_AppSpec.Name, m_Window, m_RHI, m_ImGuiRenderPass->GetRHIRenderPass());
+        ret = m_ImGuiLayer->Init(m_AppSpec.Name, m_Window, m_RHI, m_ImGuiRenderer->GetRenderPass());
         if (!ret)
         {
             APP_LOG_ERROR("ImGuiLayer::Init fail");
