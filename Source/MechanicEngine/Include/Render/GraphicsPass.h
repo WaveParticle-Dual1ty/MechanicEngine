@@ -15,6 +15,7 @@ struct GraphicsPassPipelineStats
     Ref<RHIShader> ShaderPS;
     RHIVertexInputLayout VertexInputLayout;
     RHIInputAssemblyInfo InputAssemblyInfo;
+    RHIColorBlendDesc ColorBlendDesc;
     std::vector<RHIConstantRange> ConstantRanges;
     std::vector<Ref<RHIDescriptorSet>> DescriptorSets;
 };

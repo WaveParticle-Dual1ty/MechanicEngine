@@ -282,6 +282,10 @@ bool TestRenderer::CreateGraphicPass()
         {"InTexcoord", ERHIShaderDataType::Float2, 1}
     };
     pipelineStats.InputAssemblyInfo.PrimitiveTopology = RHIPrimitiveTopology::RHI_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+    pipelineStats.ColorBlendDesc = {
+        {true, RHIBlendFactor::SrcAlpha, RHIBlendFactor::Zero, RHIBlendOp::Add, RHIBlendFactor::SrcAlpha,
+         RHIBlendFactor::Zero, RHIBlendOp::Add}
+    };
     pipelineStats.DescriptorSets = m_DescriptorSets;
 
     GraphicsPassBuildInfo buildInfo;

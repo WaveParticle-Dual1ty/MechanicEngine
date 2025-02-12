@@ -4,7 +4,6 @@
 #include "MechanicEngine/Include/Core/Time.h"
 #include "MechanicEngine/Include/Core/Assert.h"
 #include "MechanicEngine/Source/ImGui/ImGuiLayer.h"
-#include "MechanicEngine/Source/ImGui/ImGuiRenderPass.h"
 #include "MechanicEngine/Source/ImGui/ImGuiRenderer.h"
 #include "AppLog.h"
 #include "LayerStack.h"

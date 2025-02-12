@@ -780,6 +780,64 @@ ERHIImageLayout ConvertERHITextureUsageToERHIImageLayout(ERHITextureUsage usage)
     }
 }
 
+VkBlendFactor ConvertRHIBlendFactorToVkBlendFactor(RHIBlendFactor type)
+{
+    switch (type)
+    {
+        case RHIBlendFactor::Zero:
+            return VK_BLEND_FACTOR_ZERO;
+        case RHIBlendFactor::One:
+            return VK_BLEND_FACTOR_ONE;
+        case RHIBlendFactor::SrcColor:
+            return VK_BLEND_FACTOR_SRC_COLOR;
+        case RHIBlendFactor::OneMinusSrcColor:
+            return VK_BLEND_FACTOR_ONE_MINUS_SRC_COLOR;
+        case RHIBlendFactor::DstColor:
+            return VK_BLEND_FACTOR_DST_COLOR;
+        case RHIBlendFactor::OneMinusDstColor:
+            return VK_BLEND_FACTOR_ONE_MINUS_DST_COLOR;
+        case RHIBlendFactor::SrcAlpha:
+            return VK_BLEND_FACTOR_SRC_ALPHA;
+        case RHIBlendFactor::OneMinusSrcAlpha:
+            return VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+        case RHIBlendFactor::DstAlpha:
+            return VK_BLEND_FACTOR_DST_ALPHA;
+        case RHIBlendFactor::OneMinusDstAlpha:
+            return VK_BLEND_FACTOR_ONE_MINUS_DST_ALPHA;
+        case RHIBlendFactor::ConstantColor:
+            return VK_BLEND_FACTOR_CONSTANT_COLOR;
+        case RHIBlendFactor::OneMinusConstantColor:
+            return VK_BLEND_FACTOR_ONE_MINUS_CONSTANT_COLOR;
+        case RHIBlendFactor::ConstantAlpha:
+            return VK_BLEND_FACTOR_CONSTANT_ALPHA;
+        case RHIBlendFactor::OneMinusConstantAlpha:
+            return VK_BLEND_FACTOR_ONE_MINUS_CONSTANT_ALPHA;
+        default:
+            ME_ASSERT(false, "Not support RHIBlendFactor now");
+            return VK_BLEND_FACTOR_ONE_MINUS_CONSTANT_ALPHA;
+    }
+}
+
+VkBlendOp ConvertRHIBlendOpToVkBlendOp(RHIBlendOp type)
+{
+    switch (type)
+    {
+        case RHIBlendOp::Add:
+            return VK_BLEND_OP_ADD;
+        case RHIBlendOp::Subtract:
+            return VK_BLEND_OP_SUBTRACT;
+        case RHIBlendOp::ReverseSubtract:
+            return VK_BLEND_OP_REVERSE_SUBTRACT;
+        case RHIBlendOp::Min:
+            return VK_BLEND_OP_MIN;
+        case RHIBlendOp::Max:
+            return VK_BLEND_OP_MAX;
+        default:
+            ME_ASSERT(false, "Not support RHIBlendOp now");
+            return VK_BLEND_OP_MAX;
+    }
+}
+
 }  //namespace Util
 
 }  //namespace ME

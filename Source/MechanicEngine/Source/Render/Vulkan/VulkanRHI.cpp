@@ -426,11 +426,15 @@ Ref<RHITexture2D> VulkanRHI::CreateRHITexture2D(RHITexture2DCreateDesc desc)
     imageViewCreateInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
     imageViewCreateInfo.format = format;
     imageViewCreateInfo.components = componentMapping;
-    imageViewCreateInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+    if (imageCreateInfo.usage & VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT)
+        imageViewCreateInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT;
+    else
+        imageViewCreateInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
     imageViewCreateInfo.subresourceRange.baseMipLevel = 0;
     imageViewCreateInfo.subresourceRange.levelCount = 1;
     imageViewCreateInfo.subresourceRange.baseArrayLayer = 0;
     imageViewCreateInfo.subresourceRange.layerCount = 1;
+    texture->m_AspectFlags = imageViewCreateInfo.subresourceRange.aspectMask;
 
     res = vkCreateImageView(m_Device, &imageViewCreateInfo, nullptr, &texture->m_ImageView);
     if (res != VK_SUCCESS)
@@ -765,10 +769,22 @@ Ref<RHIGraphicPipeline> VulkanRHI::CreateRHIGraphicPipeline(RHIGraphicPipelineCr
     multisampleState.alphaToOneEnable = VK_FALSE;
 
     // Color Blend
-    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
-    colorBlendAttachment.blendEnable = VK_FALSE;
-    colorBlendAttachment.colorWriteMask =
-        VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
+    std::vector<VkPipelineColorBlendAttachmentState> colorBlendAttachmentStates;
+    for (const auto& attachBlend : createInfo.ColorBlendDesc.AttachmentColorBlendStates)
+    {
+        VkPipelineColorBlendAttachmentState state = {};
+        state.blendEnable = attachBlend.EnableBlend ? VK_TRUE : VK_FALSE;
+        state.srcColorBlendFactor = Util::ConvertRHIBlendFactorToVkBlendFactor(attachBlend.SrcColorBlendFactor);
+        state.dstColorBlendFactor = Util::ConvertRHIBlendFactorToVkBlendFactor(attachBlend.DstColorBlendFactor);
+        state.colorBlendOp = Util::ConvertRHIBlendOpToVkBlendOp(attachBlend.ColorBlendOp);
+        state.srcAlphaBlendFactor = Util::ConvertRHIBlendFactorToVkBlendFactor(attachBlend.SrcAlphaBlendFactor);
+        state.dstAlphaBlendFactor = Util::ConvertRHIBlendFactorToVkBlendFactor(attachBlend.DstAlphaBlendFactor);
+        state.alphaBlendOp = Util::ConvertRHIBlendOpToVkBlendOp(attachBlend.AlphaBlendOp);
+        state.colorWriteMask =
+            VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
+
+        colorBlendAttachmentStates.push_back(state);
+    }
 
     VkPipelineColorBlendStateCreateInfo colorBlend;
     colorBlend.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
@@ -776,12 +792,12 @@ Ref<RHIGraphicPipeline> VulkanRHI::CreateRHIGraphicPipeline(RHIGraphicPipelineCr
     colorBlend.flags = 0;
     colorBlend.logicOpEnable = VK_FALSE;
     colorBlend.logicOp = VK_LOGIC_OP_COPY;
-    colorBlend.attachmentCount = 1;
-    colorBlend.pAttachments = &colorBlendAttachment;
-    colorBlend.blendConstants[0] = 0;
-    colorBlend.blendConstants[1] = 0;
-    colorBlend.blendConstants[2] = 0;
-    colorBlend.blendConstants[3] = 0;
+    colorBlend.attachmentCount = static_cast<uint32_t>(colorBlendAttachmentStates.size());
+    colorBlend.pAttachments = colorBlendAttachmentStates.data();
+    colorBlend.blendConstants[0] = createInfo.ColorBlendDesc.Constants.R;
+    colorBlend.blendConstants[1] = createInfo.ColorBlendDesc.Constants.G;
+    colorBlend.blendConstants[2] = createInfo.ColorBlendDesc.Constants.B;
+    colorBlend.blendConstants[3] = createInfo.ColorBlendDesc.Constants.A;
 
     // Dynamic State
     VkDynamicState dynamicStates[2] = {VK_DYNAMIC_STATE_VIEWPORT, VK_DYNAMIC_STATE_SCISSOR};
@@ -1193,7 +1209,7 @@ void VulkanRHI::CmdTransition(Ref<RHICommandBuffer> cmdBuffer, RHITransition tra
         barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
         barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
         barrier.image = texture->m_Image;
-        barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        barrier.subresourceRange.aspectMask = texture->m_AspectFlags;
         barrier.subresourceRange.baseMipLevel = 0;
         barrier.subresourceRange.levelCount = 1;
         barrier.subresourceRange.baseArrayLayer = 0;
@@ -1896,6 +1912,7 @@ bool VulkanRHI::CreateSwapchainResources(
         texture->m_Height = info.imageExtent.height;
         texture->m_VKFormat = info.imageFormat;
         texture->m_Image = swapchainImages[i];
+        texture->m_AspectFlags = VK_IMAGE_ASPECT_COLOR_BIT;
         swapchainTextures[i] = texture;
     }
 

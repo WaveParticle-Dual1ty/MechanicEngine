@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include <vector>
+#include "RHIStruct.h"
 #include "RHIDescriptorSet.h"
 #include "RHIShaders.h"
 #include "RHIRenderPass.h"
@@ -90,6 +91,77 @@ struct RHIInputAssemblyInfo
     RHIPrimitiveTopology PrimitiveTopology;
 };
 
+enum class RHIBlendFactor : uint32_t
+{
+    Zero,
+    One,
+    SrcColor,
+    OneMinusSrcColor,
+    DstColor,
+    OneMinusDstColor,
+    SrcAlpha,
+    OneMinusSrcAlpha,
+    DstAlpha,
+    OneMinusDstAlpha,
+    ConstantColor,
+    OneMinusConstantColor,
+    ConstantAlpha,
+    OneMinusConstantAlpha,
+};
+
+enum class RHIBlendOp : uint32_t
+{
+    Add,
+    Subtract,
+    ReverseSubtract,
+    Min,
+    Max
+};
+
+struct RHIColorBlendState
+{
+    bool EnableBlend = false;
+    RHIBlendFactor SrcColorBlendFactor = RHIBlendFactor::Zero;
+    RHIBlendFactor DstColorBlendFactor = RHIBlendFactor::Zero;
+    RHIBlendOp ColorBlendOp = RHIBlendOp::Add;
+    RHIBlendFactor SrcAlphaBlendFactor = RHIBlendFactor::Zero;
+    RHIBlendFactor DstAlphaBlendFactor = RHIBlendFactor::Zero;
+    RHIBlendOp AlphaBlendOp = RHIBlendOp::Add;
+
+    RHIColorBlendState() = default;
+
+    RHIColorBlendState(
+        bool enableBlend,
+        RHIBlendFactor srcColorBlendFactor,
+        RHIBlendFactor dstColorBlendFactor,
+        RHIBlendOp colorBlendOp,
+        RHIBlendFactor srcAlphaBlendFactor,
+        RHIBlendFactor dstAlphaBlendFactor,
+        RHIBlendOp alphaBlendOp)
+        : EnableBlend(enableBlend)
+        , SrcColorBlendFactor(srcColorBlendFactor)
+        , DstColorBlendFactor(dstColorBlendFactor)
+        , ColorBlendOp(colorBlendOp)
+        , SrcAlphaBlendFactor(srcAlphaBlendFactor)
+        , DstAlphaBlendFactor(dstAlphaBlendFactor)
+        , AlphaBlendOp(alphaBlendOp)
+    {
+    }
+};
+
+struct RHIColorBlendDesc
+{
+    std::vector<RHIColorBlendState> AttachmentColorBlendStates;
+    RHIColor Constants = {0, 0, 0, 0};
+
+    RHIColorBlendDesc() = default;
+
+    RHIColorBlendDesc(const std::initializer_list<RHIColorBlendState>& attachmentColorBlendStates)
+        : AttachmentColorBlendStates(attachmentColorBlendStates)
+    {
+    }
+};
+
 enum class ERHIShaderStage : uint32_t
 {
     RHI_SHADER_STAGE_VERTEX_BIT,
@@ -112,6 +184,7 @@ struct RHIGraphicPipelineCreateInfo
     std::vector<Ref<RHIShader>> Shaders;
     RHIVertexInputLayout VertexInputLayout;
     RHIInputAssemblyInfo InputAssemblyInfo;
+    RHIColorBlendDesc ColorBlendDesc;
     Ref<RHIRenderPass> RenderPass;
     std::vector<RHIConstantRange> ConstantRanges;
     std::vector<Ref<RHIDescriptorSet>> DescriptorSets;

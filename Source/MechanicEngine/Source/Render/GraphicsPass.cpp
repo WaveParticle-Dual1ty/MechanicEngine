@@ -36,6 +36,7 @@ bool GraphicsPass::BuildGraphicsPass(GraphicsPassBuildInfo createInfo)
     graphicPipelineCreateInfo.Shaders = shaders;
     graphicPipelineCreateInfo.VertexInputLayout = pipelineStats.VertexInputLayout;
     graphicPipelineCreateInfo.InputAssemblyInfo = pipelineStats.InputAssemblyInfo;
+    graphicPipelineCreateInfo.ColorBlendDesc = pipelineStats.ColorBlendDesc;
     graphicPipelineCreateInfo.RenderPass = m_RenderPass;
     graphicPipelineCreateInfo.ConstantRanges = pipelineStats.ConstantRanges;
     graphicPipelineCreateInfo.DescriptorSets = pipelineStats.DescriptorSets;

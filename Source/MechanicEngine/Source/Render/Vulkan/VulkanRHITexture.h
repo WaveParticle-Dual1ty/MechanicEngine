@@ -13,6 +13,7 @@ private:
     VkMemoryRequirements m_MemRequirements = {};
     VkDeviceMemory m_DeviceMem = VK_NULL_HANDLE;
     VkImageView m_ImageView = VK_NULL_HANDLE;
+    VkImageAspectFlags m_AspectFlags = 0;
 
 private:
     friend class VulkanRHI;

@@ -34,6 +34,9 @@ VkBufferUsageFlags ConvertRHIBufferUsageFlagsToVkBufferUsageFlags(RHIBufferUsage
 RHIAccessFlags ConvertERHITextureUsageToRHIAccessFlags(ERHITextureUsage usage);
 ERHIImageLayout ConvertERHITextureUsageToERHIImageLayout(ERHITextureUsage usage);
 
+VkBlendFactor ConvertRHIBlendFactorToVkBlendFactor(RHIBlendFactor type);
+VkBlendOp ConvertRHIBlendOpToVkBlendOp(RHIBlendOp type);
+
 }  //namespace Util
 
 }  //namespace ME
