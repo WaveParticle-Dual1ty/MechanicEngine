@@ -35,14 +35,6 @@ struct RHIColor
     }
 };
 
-struct RHIColorClearValue
-{
-    float R = 0;
-    float G = 0;
-    float B = 0;
-    float A = 0;
-};
-
 struct RHIViewport
 {
     float X = 0;

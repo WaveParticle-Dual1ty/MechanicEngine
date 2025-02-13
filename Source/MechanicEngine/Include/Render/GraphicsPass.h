@@ -2,6 +2,7 @@
 #include <cstdint>
 #include <vector>
 #include <mutex>
+#include "RHIStruct.h"
 #include "RHI.h"
 #include "RHITexture.h"
 #include "RHIRenderPass.h"
@@ -9,22 +10,11 @@
 
 namespace ME
 {
-struct GraphicsPassPipelineStats
-{
-    Ref<RHIShader> ShaderVS;
-    Ref<RHIShader> ShaderPS;
-    RHIVertexInputLayout VertexInputLayout;
-    RHIInputAssemblyInfo InputAssemblyInfo;
-    RHIColorBlendDesc ColorBlendDesc;
-    std::vector<RHIConstantRange> ConstantRanges;
-    std::vector<Ref<RHIDescriptorSet>> DescriptorSets;
-};
-
 struct GraphicsPassBuildInfo
 {
     std::string Name = "GraphicsPass";
     RHIRenderPassCreateDesc RenderPassDesc;
-    GraphicsPassPipelineStats PipelineStats;
+    RHIGraphicPipelineStats PipelineStats;
 };
 
 class GraphicsPass
@@ -34,7 +24,7 @@ public:
 
 public:
     bool BuildGraphicsPass(GraphicsPassBuildInfo createInfo);
-    void BeginPass(Ref<RHICommandBuffer> cmdBuffer, Ref<RHITexture2D> targetColor);
+    void BeginPass(Ref<RHICommandBuffer> cmdBuffer, Ref<RHITexture2D> targetColor, RHIColor clearColor);
     void EndPass(Ref<RHICommandBuffer> cmdBuffer);
 
     Ref<RHIGraphicPipeline> GetPipeline();

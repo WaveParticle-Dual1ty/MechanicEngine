@@ -838,6 +838,26 @@ VkBlendOp ConvertRHIBlendOpToVkBlendOp(RHIBlendOp type)
     }
 }
 
+VkDynamicState ConverRHIDynamicStateToVkDynamicState(RHIDynamicState state)
+{
+    switch (state)
+    {
+        case RHIDynamicState::CullMode:
+            return VK_DYNAMIC_STATE_CULL_MODE;
+        case RHIDynamicState::FrontMode:
+            return VK_DYNAMIC_STATE_FRONT_FACE;
+        case RHIDynamicState::PrimitiveTopology:
+            return VK_DYNAMIC_STATE_PRIMITIVE_TOPOLOGY;
+        case RHIDynamicState::ColorBlendEnable:
+            return VK_DYNAMIC_STATE_COLOR_BLEND_ENABLE_EXT;
+        case RHIDynamicState::ColorBlendEquation:
+            return VK_DYNAMIC_STATE_COLOR_BLEND_EQUATION_EXT;
+        default:
+            ME_ASSERT(false, "Not support RHIDynamicState now");
+            return VK_DYNAMIC_STATE_MAX_ENUM;
+    }
+}
+
 }  //namespace Util
 
 }  //namespace ME

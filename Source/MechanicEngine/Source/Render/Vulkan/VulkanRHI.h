@@ -75,6 +75,12 @@ public:
     virtual void CmdBindGraphicPipeline(Ref<RHICommandBuffer> cmdBuffer, Ref<RHIGraphicPipeline> pipeline) override;
     virtual void CmdSetViewport(Ref<RHICommandBuffer> cmdBuffer, RHIViewport viewport) override;
     virtual void CmdSetScissor(Ref<RHICommandBuffer> cmdBuffer, RHIScissor scissor) override;
+    virtual void CmdSetColorBlendEnable(Ref<RHICommandBuffer> cmdBuffer, uint32_t attachIndex, bool enable) override;
+    virtual void CmdSetColorBlendEnable(Ref<RHICommandBuffer> cmdBuffer, const std::vector<bool>& enables) override;
+    virtual void CmdSetColorBlendEquation(
+        Ref<RHICommandBuffer> cmdBuffer,
+        uint32_t attachIndex,
+        RHIColorBlendEquation colorBlendEquation) override;
     virtual void CmdBindVertexBuffer(Ref<RHICommandBuffer> cmdBuffer, Ref<RHIBuffer> buffer) override;
     virtual void CmdBindIndexBuffer(Ref<RHICommandBuffer> cmdBuffer, Ref<RHIBuffer> buffer) override;
     virtual void CmdBindDescriptorSets(Ref<RHICommandBuffer> cmdBuffer, Ref<RHIGraphicPipeline> pipeline) override;
@@ -203,6 +209,8 @@ private:
 private:
     PFN_vkCmdBeginDebugUtilsLabelEXT m_VkCmdBeginDebugUtilsLabelEXT = nullptr;
     PFN_vkCmdEndDebugUtilsLabelEXT m_VkCmdEndDebugUtilsLabelEXT = nullptr;
+    PFN_vkCmdSetColorBlendEnableEXT m_vkCmdSetColorBlendEnableEXT = nullptr;
+    PFN_vkCmdSetColorBlendEquationEXT m_vkCmdSetColorBlendEquationEXT = nullptr;
 };
 
 }  //namespace ME

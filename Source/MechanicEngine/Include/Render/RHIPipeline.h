@@ -88,7 +88,7 @@ enum class RHIPrimitiveTopology
 
 struct RHIInputAssemblyInfo
 {
-    RHIPrimitiveTopology PrimitiveTopology;
+    RHIPrimitiveTopology PrimitiveTopology = RHIPrimitiveTopology::RHI_PRIMITIVE_TOPOLOGY_POINT_LIST;
 };
 
 enum class RHIBlendFactor : uint32_t
@@ -118,15 +118,38 @@ enum class RHIBlendOp : uint32_t
     Max
 };
 
-struct RHIColorBlendState
+struct RHIColorBlendEquation
 {
-    bool EnableBlend = false;
     RHIBlendFactor SrcColorBlendFactor = RHIBlendFactor::Zero;
     RHIBlendFactor DstColorBlendFactor = RHIBlendFactor::Zero;
     RHIBlendOp ColorBlendOp = RHIBlendOp::Add;
     RHIBlendFactor SrcAlphaBlendFactor = RHIBlendFactor::Zero;
     RHIBlendFactor DstAlphaBlendFactor = RHIBlendFactor::Zero;
     RHIBlendOp AlphaBlendOp = RHIBlendOp::Add;
+
+    RHIColorBlendEquation() = default;
+
+    RHIColorBlendEquation(
+        RHIBlendFactor srcColorBlendFactor,
+        RHIBlendFactor dstColorBlendFactor,
+        RHIBlendOp colorBlendOp,
+        RHIBlendFactor srcAlphaBlendFactor,
+        RHIBlendFactor dstAlphaBlendFactor,
+        RHIBlendOp alphaBlendOp)
+        : SrcColorBlendFactor(srcColorBlendFactor)
+        , DstColorBlendFactor(dstColorBlendFactor)
+        , ColorBlendOp(colorBlendOp)
+        , SrcAlphaBlendFactor(srcAlphaBlendFactor)
+        , DstAlphaBlendFactor(dstAlphaBlendFactor)
+        , AlphaBlendOp(alphaBlendOp)
+    {
+    }
+};
+
+struct RHIColorBlendState
+{
+    bool EnableBlend = false;
+    RHIColorBlendEquation ColorBlendEquation;
 
     RHIColorBlendState() = default;
 
@@ -139,12 +162,13 @@ struct RHIColorBlendState
         RHIBlendFactor dstAlphaBlendFactor,
         RHIBlendOp alphaBlendOp)
         : EnableBlend(enableBlend)
-        , SrcColorBlendFactor(srcColorBlendFactor)
-        , DstColorBlendFactor(dstColorBlendFactor)
-        , ColorBlendOp(colorBlendOp)
-        , SrcAlphaBlendFactor(srcAlphaBlendFactor)
-        , DstAlphaBlendFactor(dstAlphaBlendFactor)
-        , AlphaBlendOp(alphaBlendOp)
+        , ColorBlendEquation(
+              srcColorBlendFactor,
+              dstColorBlendFactor,
+              colorBlendOp,
+              srcAlphaBlendFactor,
+              dstAlphaBlendFactor,
+              alphaBlendOp)
     {
     }
 };
@@ -158,6 +182,27 @@ struct RHIColorBlendDesc
 
     RHIColorBlendDesc(const std::initializer_list<RHIColorBlendState>& attachmentColorBlendStates)
         : AttachmentColorBlendStates(attachmentColorBlendStates)
+    {
+    }
+};
+
+enum class RHIDynamicState : uint32_t
+{
+    CullMode,
+    FrontMode,
+    PrimitiveTopology,
+    ColorBlendEnable,
+    ColorBlendEquation,
+};
+
+struct RHIDynamicStatesDesc
+{
+    std::vector<RHIDynamicState> DynamicStates;
+
+    RHIDynamicStatesDesc() = default;
+
+    RHIDynamicStatesDesc(const std::initializer_list<RHIDynamicState>& dynamicStates)
+        : DynamicStates(dynamicStates)
     {
     }
 };
@@ -179,15 +224,22 @@ struct RHIConstantRange
     uint32_t Size = 0;
 };
 
-struct RHIGraphicPipelineCreateInfo
+struct RHIGraphicPipelineStats
 {
-    std::vector<Ref<RHIShader>> Shaders;
+    Ref<RHIShader> ShaderVS;
+    Ref<RHIShader> ShaderPS;
     RHIVertexInputLayout VertexInputLayout;
     RHIInputAssemblyInfo InputAssemblyInfo;
     RHIColorBlendDesc ColorBlendDesc;
-    Ref<RHIRenderPass> RenderPass;
+    RHIDynamicStatesDesc DynamicStatesDesc;
     std::vector<RHIConstantRange> ConstantRanges;
     std::vector<Ref<RHIDescriptorSet>> DescriptorSets;
+};
+
+struct RHIGraphicPipelineCreateInfo
+{
+    RHIGraphicPipelineStats PipelineStats;
+    Ref<RHIRenderPass> RenderPass;
 };
 
 struct RHIGraphicPipeline

@@ -20,7 +20,7 @@ namespace ME
 struct RHIRenderPassBeginInfo
 {
     RHIRenderArea RenderArea;
-    RHIColorClearValue ColorClearValue;
+    RHIColor ColorClearValue;
     Ref<RHIRenderPass> RenderPass;
     Ref<RHIFramebuffer> Framebuffer;
 };
@@ -88,6 +88,12 @@ public:
     virtual void CmdBindGraphicPipeline(Ref<RHICommandBuffer> cmdBuffer, Ref<RHIGraphicPipeline> pipeline) = 0;
     virtual void CmdSetViewport(Ref<RHICommandBuffer> cmdBuffer, RHIViewport viewport) = 0;
     virtual void CmdSetScissor(Ref<RHICommandBuffer> cmdBuffer, RHIScissor scissor) = 0;
+    virtual void CmdSetColorBlendEnable(Ref<RHICommandBuffer> cmdBuffer, uint32_t attachIndex, bool enable) = 0;
+    virtual void CmdSetColorBlendEnable(Ref<RHICommandBuffer> cmdBuffer, const std::vector<bool>& enables) = 0;
+    virtual void CmdSetColorBlendEquation(
+        Ref<RHICommandBuffer> cmdBuffer,
+        uint32_t attachIndex,
+        RHIColorBlendEquation colorBlendEquation) = 0;
     virtual void CmdBindVertexBuffer(Ref<RHICommandBuffer> cmdBuffer, Ref<RHIBuffer> buffer) = 0;
     virtual void CmdBindIndexBuffer(Ref<RHICommandBuffer> cmdBuffer, Ref<RHIBuffer> buffer) = 0;
     virtual void CmdBindDescriptorSets(Ref<RHICommandBuffer> cmdBuffer, Ref<RHIGraphicPipeline> pipeline) = 0;

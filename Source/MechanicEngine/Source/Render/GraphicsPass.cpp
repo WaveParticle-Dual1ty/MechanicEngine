@@ -23,23 +23,9 @@ bool GraphicsPass::BuildGraphicsPass(GraphicsPassBuildInfo createInfo)
     }
 
     // Create pipeline
-    GraphicsPassPipelineStats pipelineStats = createInfo.PipelineStats;
-
-    std::vector<Ref<RHIShader>> shaders;
-    if (pipelineStats.ShaderVS)
-        shaders.push_back(pipelineStats.ShaderVS);
-    if (pipelineStats.ShaderPS)
-        shaders.push_back(pipelineStats.ShaderPS);
-    ME_ASSERT(shaders.size() != 0, "Empty shaders");
-
     RHIGraphicPipelineCreateInfo graphicPipelineCreateInfo;
-    graphicPipelineCreateInfo.Shaders = shaders;
-    graphicPipelineCreateInfo.VertexInputLayout = pipelineStats.VertexInputLayout;
-    graphicPipelineCreateInfo.InputAssemblyInfo = pipelineStats.InputAssemblyInfo;
-    graphicPipelineCreateInfo.ColorBlendDesc = pipelineStats.ColorBlendDesc;
+    graphicPipelineCreateInfo.PipelineStats = createInfo.PipelineStats;
     graphicPipelineCreateInfo.RenderPass = m_RenderPass;
-    graphicPipelineCreateInfo.ConstantRanges = pipelineStats.ConstantRanges;
-    graphicPipelineCreateInfo.DescriptorSets = pipelineStats.DescriptorSets;
 
     m_Pipeline = m_RHI->CreateRHIGraphicPipeline(graphicPipelineCreateInfo);
     if (!m_Pipeline)
@@ -51,7 +37,7 @@ bool GraphicsPass::BuildGraphicsPass(GraphicsPassBuildInfo createInfo)
     return true;
 }
 
-void GraphicsPass::BeginPass(Ref<RHICommandBuffer> cmdBuffer, Ref<RHITexture2D> targetColor)
+void GraphicsPass::BeginPass(Ref<RHICommandBuffer> cmdBuffer, Ref<RHITexture2D> targetColor, RHIColor clearColor)
 {
     std::vector<Ref<RHITexture2D>> attachments = {targetColor};
     bool ret = CheckFramebuffer(attachments);
@@ -82,7 +68,7 @@ void GraphicsPass::BeginPass(Ref<RHICommandBuffer> cmdBuffer, Ref<RHITexture2D> 
 
     RHIRenderPassBeginInfo renderPassBeginInfo;
     renderPassBeginInfo.RenderArea = {0, 0, w, h};
-    renderPassBeginInfo.ColorClearValue = {0.8f, 0.2f, 0.3f, 1.f};
+    renderPassBeginInfo.ColorClearValue = clearColor;
     renderPassBeginInfo.RenderPass = m_RenderPass;
     renderPassBeginInfo.Framebuffer = m_Framebuffer;
     m_RHI->CmdBeginRenderPass(cmdBuffer, renderPassBeginInfo);

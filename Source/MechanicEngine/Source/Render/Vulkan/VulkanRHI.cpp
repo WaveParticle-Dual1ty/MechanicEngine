@@ -109,6 +109,10 @@ bool VulkanRHI::Initialize(std::shared_ptr<Window> wnd)
         (PFN_vkCmdBeginDebugUtilsLabelEXT)vkGetInstanceProcAddr(m_Instance, "vkCmdBeginDebugUtilsLabelEXT");
     m_VkCmdEndDebugUtilsLabelEXT =
         (PFN_vkCmdEndDebugUtilsLabelEXT)vkGetInstanceProcAddr(m_Instance, "vkCmdEndDebugUtilsLabelEXT");
+    m_vkCmdSetColorBlendEnableEXT =
+        (PFN_vkCmdSetColorBlendEnableEXT)vkGetInstanceProcAddr(m_Instance, "vkCmdSetColorBlendEnableEXT");
+    m_vkCmdSetColorBlendEquationEXT =
+        (PFN_vkCmdSetColorBlendEquationEXT)vkGetInstanceProcAddr(m_Instance, "vkCmdSetColorBlendEquationEXT");
 
     return true;
 }
@@ -667,9 +671,17 @@ Ref<RHISampler> VulkanRHI::CreateRHISampler(RHISamplerCreateInfo createInfo)
 
 Ref<RHIGraphicPipeline> VulkanRHI::CreateRHIGraphicPipeline(RHIGraphicPipelineCreateInfo createInfo)
 {
+    RHIGraphicPipelineStats pipelineStats = createInfo.PipelineStats;
+
     // shader
     std::vector<VkPipelineShaderStageCreateInfo> pipelineShaderStages;
-    for (auto& shader : createInfo.Shaders)
+    std::vector<Ref<RHIShader>> shaders;
+    if (pipelineStats.ShaderVS)
+        shaders.push_back(pipelineStats.ShaderVS);
+    if (pipelineStats.ShaderPS)
+        shaders.push_back(pipelineStats.ShaderPS);
+
+    for (auto& shader : shaders)
     {
         Ref<VulkanRHIShader> vulkanShader = std::dynamic_pointer_cast<VulkanRHIShader>(shader);
         VkPipelineShaderStageCreateInfo shaderStage;
@@ -686,11 +698,11 @@ Ref<RHIGraphicPipeline> VulkanRHI::CreateRHIGraphicPipeline(RHIGraphicPipelineCr
     // vertex layout
     VkVertexInputBindingDescription vertexInputBindingDescription;
     vertexInputBindingDescription.binding = 0;
-    vertexInputBindingDescription.stride = createInfo.VertexInputLayout.GetStride();
+    vertexInputBindingDescription.stride = pipelineStats.VertexInputLayout.GetStride();
     vertexInputBindingDescription.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
 
     std::vector<VkVertexInputAttributeDescription> vertexInputDescs;
-    for (auto& vertexInput : createInfo.VertexInputLayout.GetElements())
+    for (auto& vertexInput : pipelineStats.VertexInputLayout.GetElements())
     {
         VkVertexInputAttributeDescription desc;
         desc.location = vertexInput.Location;
@@ -714,7 +726,7 @@ Ref<RHIGraphicPipeline> VulkanRHI::CreateRHIGraphicPipeline(RHIGraphicPipelineCr
     inputAssemblyState.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
     inputAssemblyState.pNext = nullptr;
     inputAssemblyState.flags = 0;
-    RHIPrimitiveTopology primitiveTopology = createInfo.InputAssemblyInfo.PrimitiveTopology;
+    RHIPrimitiveTopology primitiveTopology = pipelineStats.InputAssemblyInfo.PrimitiveTopology;
     inputAssemblyState.topology = Util::ConvertRHIPrimitiveTopologyToVkPrimitiveTopology(primitiveTopology);
     inputAssemblyState.primitiveRestartEnable = VK_FALSE;
 
@@ -770,16 +782,18 @@ Ref<RHIGraphicPipeline> VulkanRHI::CreateRHIGraphicPipeline(RHIGraphicPipelineCr
 
     // Color Blend
     std::vector<VkPipelineColorBlendAttachmentState> colorBlendAttachmentStates;
-    for (const auto& attachBlend : createInfo.ColorBlendDesc.AttachmentColorBlendStates)
+    for (const auto& attachBlend : pipelineStats.ColorBlendDesc.AttachmentColorBlendStates)
     {
         VkPipelineColorBlendAttachmentState state = {};
         state.blendEnable = attachBlend.EnableBlend ? VK_TRUE : VK_FALSE;
-        state.srcColorBlendFactor = Util::ConvertRHIBlendFactorToVkBlendFactor(attachBlend.SrcColorBlendFactor);
-        state.dstColorBlendFactor = Util::ConvertRHIBlendFactorToVkBlendFactor(attachBlend.DstColorBlendFactor);
-        state.colorBlendOp = Util::ConvertRHIBlendOpToVkBlendOp(attachBlend.ColorBlendOp);
-        state.srcAlphaBlendFactor = Util::ConvertRHIBlendFactorToVkBlendFactor(attachBlend.SrcAlphaBlendFactor);
-        state.dstAlphaBlendFactor = Util::ConvertRHIBlendFactorToVkBlendFactor(attachBlend.DstAlphaBlendFactor);
-        state.alphaBlendOp = Util::ConvertRHIBlendOpToVkBlendOp(attachBlend.AlphaBlendOp);
+
+        RHIColorBlendEquation blendEqua = attachBlend.ColorBlendEquation;
+        state.srcColorBlendFactor = Util::ConvertRHIBlendFactorToVkBlendFactor(blendEqua.SrcColorBlendFactor);
+        state.dstColorBlendFactor = Util::ConvertRHIBlendFactorToVkBlendFactor(blendEqua.DstColorBlendFactor);
+        state.colorBlendOp = Util::ConvertRHIBlendOpToVkBlendOp(blendEqua.ColorBlendOp);
+        state.srcAlphaBlendFactor = Util::ConvertRHIBlendFactorToVkBlendFactor(blendEqua.SrcAlphaBlendFactor);
+        state.dstAlphaBlendFactor = Util::ConvertRHIBlendFactorToVkBlendFactor(blendEqua.DstAlphaBlendFactor);
+        state.alphaBlendOp = Util::ConvertRHIBlendOpToVkBlendOp(blendEqua.AlphaBlendOp);
         state.colorWriteMask =
             VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
 
@@ -794,20 +808,27 @@ Ref<RHIGraphicPipeline> VulkanRHI::CreateRHIGraphicPipeline(RHIGraphicPipelineCr
     colorBlend.logicOp = VK_LOGIC_OP_COPY;
     colorBlend.attachmentCount = static_cast<uint32_t>(colorBlendAttachmentStates.size());
     colorBlend.pAttachments = colorBlendAttachmentStates.data();
-    colorBlend.blendConstants[0] = createInfo.ColorBlendDesc.Constants.R;
-    colorBlend.blendConstants[1] = createInfo.ColorBlendDesc.Constants.G;
-    colorBlend.blendConstants[2] = createInfo.ColorBlendDesc.Constants.B;
-    colorBlend.blendConstants[3] = createInfo.ColorBlendDesc.Constants.A;
+    colorBlend.blendConstants[0] = pipelineStats.ColorBlendDesc.Constants.R;
+    colorBlend.blendConstants[1] = pipelineStats.ColorBlendDesc.Constants.G;
+    colorBlend.blendConstants[2] = pipelineStats.ColorBlendDesc.Constants.B;
+    colorBlend.blendConstants[3] = pipelineStats.ColorBlendDesc.Constants.A;
 
     // Dynamic State
-    VkDynamicState dynamicStates[2] = {VK_DYNAMIC_STATE_VIEWPORT, VK_DYNAMIC_STATE_SCISSOR};
+    std::vector<VkDynamicState> dynamicStates = {VK_DYNAMIC_STATE_VIEWPORT, VK_DYNAMIC_STATE_SCISSOR};
+    for (auto rhiState : pipelineStats.DynamicStatesDesc.DynamicStates)
+    {
+        VkDynamicState state = Util::ConverRHIDynamicStateToVkDynamicState(rhiState);
+        dynamicStates.push_back(state);
+    }
+
     VkPipelineDynamicStateCreateInfo pipelineDynamicStateCreateInfo;
     pipelineDynamicStateCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
     pipelineDynamicStateCreateInfo.pNext = nullptr;
     pipelineDynamicStateCreateInfo.flags = 0;
-    pipelineDynamicStateCreateInfo.dynamicStateCount = 2;
-    pipelineDynamicStateCreateInfo.pDynamicStates = dynamicStates;
+    pipelineDynamicStateCreateInfo.dynamicStateCount = static_cast<uint32_t>(dynamicStates.size());
+    pipelineDynamicStateCreateInfo.pDynamicStates = dynamicStates.data();
 
+    // Pipeline Layout
     VkPipelineLayoutCreateInfo pipelineLayoutCreateInfo = {};
     pipelineLayoutCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
     pipelineLayoutCreateInfo.pNext = nullptr;
@@ -819,13 +840,13 @@ Ref<RHIGraphicPipeline> VulkanRHI::CreateRHIGraphicPipeline(RHIGraphicPipelineCr
 
     // Set Layouts
     std::vector<VkDescriptorSetLayout> descriptorSetLayouts;
-    if (!createInfo.DescriptorSets.empty())
+    if (!pipelineStats.DescriptorSets.empty())
     {
-        descriptorSetLayouts.resize(createInfo.DescriptorSets.size());
-        for (size_t i = 0; i < createInfo.DescriptorSets.size(); ++i)
+        descriptorSetLayouts.resize(pipelineStats.DescriptorSets.size());
+        for (size_t i = 0; i < pipelineStats.DescriptorSets.size(); ++i)
         {
             Ref<VulkanRHIDescriptorSet> rhiDescSet =
-                std::dynamic_pointer_cast<VulkanRHIDescriptorSet>(createInfo.DescriptorSets[i]);
+                std::dynamic_pointer_cast<VulkanRHIDescriptorSet>(pipelineStats.DescriptorSets[i]);
             descriptorSetLayouts[i] = rhiDescSet->DescriptorSetLayout;
         }
 
@@ -835,12 +856,12 @@ Ref<RHIGraphicPipeline> VulkanRHI::CreateRHIGraphicPipeline(RHIGraphicPipelineCr
 
     // Constant Ranges
     std::vector<VkPushConstantRange> constantRanges;
-    if (!createInfo.ConstantRanges.empty())
+    if (!pipelineStats.ConstantRanges.empty())
     {
-        constantRanges.resize(createInfo.ConstantRanges.size());
-        for (size_t i = 0; i < createInfo.ConstantRanges.size(); ++i)
+        constantRanges.resize(pipelineStats.ConstantRanges.size());
+        for (size_t i = 0; i < pipelineStats.ConstantRanges.size(); ++i)
         {
-            RHIConstantRange rhiRange = createInfo.ConstantRanges[i];
+            RHIConstantRange rhiRange = pipelineStats.ConstantRanges[i];
             VkPushConstantRange range;
             range.stageFlags = Util::ConvertERHIShaderStageToVkShaderStageFlagBits(rhiRange.ShaderStage);
             range.offset = 0;
@@ -1280,6 +1301,45 @@ void VulkanRHI::CmdSetScissor(Ref<RHICommandBuffer> cmdBuffer, RHIScissor scisso
     vkCmdSetScissor(vulkanCmdBuffer->CommandBuffer, 0, 1, &tmp);
 }
 
+void VulkanRHI::CmdSetColorBlendEnable(Ref<RHICommandBuffer> cmdBuffer, uint32_t attachIndex, bool enable)
+{
+    Ref<VulkanRHICommandBuffer> vkCmdBuffer = std::dynamic_pointer_cast<VulkanRHICommandBuffer>(cmdBuffer);
+    VkBool32 tmp = enable ? VK_TRUE : VK_FALSE;
+    m_vkCmdSetColorBlendEnableEXT(vkCmdBuffer->CommandBuffer, attachIndex, 1, &tmp);
+}
+
+void VulkanRHI::CmdSetColorBlendEnable(Ref<RHICommandBuffer> cmdBuffer, const std::vector<bool>& enables)
+{
+    Ref<VulkanRHICommandBuffer> vkCmdBuffer = std::dynamic_pointer_cast<VulkanRHICommandBuffer>(cmdBuffer);
+
+    std::vector<VkBool32> blendEnables;
+    for (auto enable : enables)
+    {
+        VkBool32 tmp = enable ? VK_TRUE : VK_FALSE;
+        blendEnables.push_back(tmp);
+    }
+
+    m_vkCmdSetColorBlendEnableEXT(
+        vkCmdBuffer->CommandBuffer, 0, static_cast<uint32_t>(blendEnables.size()), blendEnables.data());
+}
+
+void VulkanRHI::CmdSetColorBlendEquation(
+    Ref<RHICommandBuffer> cmdBuffer,
+    uint32_t attachIndex,
+    RHIColorBlendEquation colorBlendEquation)
+{
+    Ref<VulkanRHICommandBuffer> vkCmdBuffer = std::dynamic_pointer_cast<VulkanRHICommandBuffer>(cmdBuffer);
+
+    VkColorBlendEquationEXT blendEqa;
+    blendEqa.srcColorBlendFactor = Util::ConvertRHIBlendFactorToVkBlendFactor(colorBlendEquation.SrcColorBlendFactor);
+    blendEqa.dstColorBlendFactor = Util::ConvertRHIBlendFactorToVkBlendFactor(colorBlendEquation.DstColorBlendFactor);
+    blendEqa.colorBlendOp = Util::ConvertRHIBlendOpToVkBlendOp(colorBlendEquation.ColorBlendOp);
+    blendEqa.srcAlphaBlendFactor = Util::ConvertRHIBlendFactorToVkBlendFactor(colorBlendEquation.SrcAlphaBlendFactor);
+    blendEqa.dstAlphaBlendFactor = Util::ConvertRHIBlendFactorToVkBlendFactor(colorBlendEquation.DstAlphaBlendFactor);
+    blendEqa.alphaBlendOp = Util::ConvertRHIBlendOpToVkBlendOp(colorBlendEquation.AlphaBlendOp);
+    m_vkCmdSetColorBlendEquationEXT(vkCmdBuffer->CommandBuffer, attachIndex, 1, &blendEqa);
+}
+
 void VulkanRHI::CmdBindVertexBuffer(Ref<RHICommandBuffer> cmdBuffer, Ref<RHIBuffer> buffer)
 {
     Ref<VulkanRHICommandBuffer> vulkanCmdBuffer = std::dynamic_pointer_cast<VulkanRHICommandBuffer>(cmdBuffer);
@@ -1433,6 +1493,11 @@ VkInstance VulkanRHI::CreateInstance()
     vkEnumerateInstanceExtensionProperties(nullptr, &instanceExtensionCnt, nullptr);
     std::vector<VkExtensionProperties> instanceExtensionProperties(instanceExtensionCnt);
     vkEnumerateInstanceExtensionProperties(nullptr, &instanceExtensionCnt, instanceExtensionProperties.data());
+
+    uint32_t layerCnt = 0;
+    vkEnumerateInstanceLayerProperties(&layerCnt, nullptr);
+    std::vector<VkLayerProperties> layerProperties(layerCnt);
+    vkEnumerateInstanceLayerProperties(&layerCnt, layerProperties.data());
 
     // check glfw required instance extensions
     uint32_t glfwRequiredExtensionCnt = 0;
@@ -1614,6 +1679,9 @@ VkDevice VulkanRHI::CreateDevice(
         "VK_KHR_swapchain",
         //"VK_KHR_pipeline_library",
         //"VK_EXT_graphics_pipeline_library",
+        "VK_EXT_extended_dynamic_state",
+        "VK_EXT_extended_dynamic_state2",
+        "VK_EXT_extended_dynamic_state3",
     };
 
     for (auto& extension : enableExtensions)
@@ -1629,12 +1697,17 @@ VkDevice VulkanRHI::CreateDevice(
     for (auto& extension : enableExtensions)
         RENDER_LOG_INFO("\t{}", extension);
 
-    VkPhysicalDeviceFeatures supportedFeatures;
-    vkGetPhysicalDeviceFeatures(physicalDevice, &supportedFeatures);
+    VkPhysicalDeviceExtendedDynamicState3FeaturesEXT extendedDynamicState3Features = {};
+    extendedDynamicState3Features.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_3_FEATURES_EXT;
+
+    VkPhysicalDeviceFeatures2 supportedFeatures2;
+    supportedFeatures2.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
+    supportedFeatures2.pNext = &extendedDynamicState3Features;
+    vkGetPhysicalDeviceFeatures2(physicalDevice, &supportedFeatures2);
 
     VkDeviceCreateInfo deviceCreateInfo;
     deviceCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-    deviceCreateInfo.pNext = nullptr;
+    deviceCreateInfo.pNext = &supportedFeatures2;
     deviceCreateInfo.flags = 0;
     deviceCreateInfo.queueCreateInfoCount = static_cast<uint32_t>(deviceQueueCreateInfos.size());
     deviceCreateInfo.pQueueCreateInfos = deviceQueueCreateInfos.data();
@@ -1642,7 +1715,7 @@ VkDevice VulkanRHI::CreateDevice(
     deviceCreateInfo.ppEnabledLayerNames = nullptr;
     deviceCreateInfo.enabledExtensionCount = static_cast<uint32_t>(enableExtensions.size());
     deviceCreateInfo.ppEnabledExtensionNames = enableExtensions.data();
-    deviceCreateInfo.pEnabledFeatures = &supportedFeatures;
+    deviceCreateInfo.pEnabledFeatures = nullptr;
 
     VkDevice device = VK_NULL_HANDLE;
     VkResult result = vkCreateDevice(physicalDevice, &deviceCreateInfo, nullptr, &device);

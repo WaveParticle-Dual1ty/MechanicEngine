@@ -36,6 +36,7 @@ ERHIImageLayout ConvertERHITextureUsageToERHIImageLayout(ERHITextureUsage usage)
 
 VkBlendFactor ConvertRHIBlendFactorToVkBlendFactor(RHIBlendFactor type);
 VkBlendOp ConvertRHIBlendOpToVkBlendOp(RHIBlendOp type);
+VkDynamicState ConverRHIDynamicStateToVkDynamicState(RHIDynamicState state);
 
 }  //namespace Util
 
