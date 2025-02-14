@@ -57,6 +57,7 @@ public:
         Ref<RHIDescriptorSet> RelateDescriptorSet,
         const std::vector<RHIWriteDescriptorSet>& writesDescSets) override;
 
+    virtual void DestroyRHIBuffer(Ref<RHIBuffer> buffer) override;
     virtual void DestroyRHITexture2D(Ref<RHITexture2D> texture) override;
     virtual void DestroyRHIRenderPass(Ref<RHIRenderPass> renderPass) override;
     virtual void DestroyRHIFramebuffer(Ref<RHIFramebuffer> framebuffer) override;

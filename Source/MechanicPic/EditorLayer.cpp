@@ -6,6 +6,8 @@
 #include "MechanicEngine/Include/Event/MouseEvent.h"
 #include "MechanicEngine/Include/Event/Input.h"
 #include "MechanicEngine/Include/Event/EventUtils.h"
+#include "MechanicEngine/Include/Media/MediaEnumToStr.h"
+#include "MechanicPicLog.h"
 
 namespace ME
 {
@@ -20,6 +22,14 @@ void EditorLayer::OnAttach()
 
     m_ViewportSize = {300, 200};
     m_CacheViewportSize = m_ViewportSize;
+
+    m_PicRenderer = CreateRef<PicRenderer>();
+    bool ret = m_PicRenderer->Init(300, 200);
+    if (!ret)
+    {
+        ME_ASSERT(false, "PicRenderer::Init fail");
+        return;
+    }
 }
 
 void EditorLayer::OnDetach()
@@ -34,7 +44,16 @@ void EditorLayer::OnUpdate(ME::Timestep timestep)
     if (size[0] != m_ViewportSize[0] || size[1] != m_ViewportSize[1])
     {
         m_ViewportSize = size;
+        bool ret = m_PicRenderer->Resize(size[0], size[1]);
+        if (!ret)
+        {
+            ME_ASSERT(false, "PicRenderer::Resize fail");
+            return;
+        }
     }
+
+    Ref<RHICommandBuffer> cmdBuffer = m_RHI->GetCurrentCommandBuffer();
+    m_PicRenderer->Draw(cmdBuffer);
 }
 
 void EditorLayer::OnUIUpdate()
@@ -49,11 +68,37 @@ void EditorLayer::OnUIUpdate()
         viewportSize = ImGui::GetContentRegionAvail();
         m_CacheViewportSize = {(uint32_t)viewportSize.x, (uint32_t)viewportSize.y};
 
+        void* texID = m_PicRenderer->GetTargetImTextureID();
+        ImGui::Image(texID, ImVec2(viewportSize.x, viewportSize.y), ImVec2(0, 0), ImVec2(1, 1));
+
         ImGui::End();
     }
 
     {
         ImGui::Begin("Information");
+
+        if (m_CurrentImage.Avaliable)
+        {
+            Ref<FileReader> file = m_CurrentImage.FileReader;
+            if (ImGui::CollapsingHeader("File", ImGuiTreeNodeFlags_DefaultOpen))
+            {
+                ImGui::Text("File Name: %s", file->GetFileName().c_str());
+                ImGui::Text("File path: %s", file->GetFullPath().c_str());
+                ImGui::Text("File size: %s", file->GetFileSizeInStr().c_str());
+            }
+
+            Ref<ImageLoader> imageLoader = m_CurrentImage.ImageLoader;
+            if (ImGui::CollapsingHeader("Image", ImGuiTreeNodeFlags_DefaultOpen))
+            {
+                const ImageInfo& imageInfo = imageLoader->GetImageInfo();
+                std::string format = Utils::EMPixelFormatToStr(imageInfo.Format);
+
+                ImGui::Text("Type:   \t%s", imageInfo.TypeInStr.c_str());
+                ImGui::Text("Width:  \t%d", imageInfo.Width);
+                ImGui::Text("Height: \t%d", imageInfo.Height);
+                ImGui::Text("Format: \t%s", format.c_str());
+            }
+        }
 
         ImGui::End();
     }
@@ -74,7 +119,12 @@ void EditorLayer::OnUIUpdate()
 
 void EditorLayer::OnEvent(ME::Event& event)
 {
-    static_cast<void>(event);
+    EventDispatcher dispatcher(event);
+    dispatcher.Dispatch<FileDropEvent>(
+        [this](FileDropEvent& event) -> bool
+        {
+            return OnFileDrop(event);
+        });
 }
 
 void EditorLayer::BeginDockspace()
@@ -138,6 +188,48 @@ void EditorLayer::BeginDockspace()
 void EditorLayer::EndDockspace()
 {
     ImGui::End();
+}
+
+bool EditorLayer::OnFileDrop(FileDropEvent& event)
+{
+    std::string imagePath = event.GetDropFiles()[0];
+
+    Image image;
+    Ref<FileReader>& file = image.FileReader;
+    file = CreateRef<FileReader>(imagePath);
+    file->Detect();
+    if (!file->IsExist())
+    {
+        MEPIC_LOG_WARN("File not exist: {}", imagePath);
+        return false;
+    }
+
+    Ref<ImageLoader>& imageLoader = image.ImageLoader;
+    imageLoader = ImageLoader::CreateInstance(imagePath);
+    imageLoader->Detect();
+    bool res = imageLoader->Avaliable();
+    if (!res)
+    {
+        MEPIC_LOG_WARN("File not Avaliable: {}", imagePath);
+        return false;
+    }
+
+    res = imageLoader->Load();
+    if (!res)
+    {
+        MEPIC_LOG_WARN("Image fail to oad: {}", imagePath);
+        return false;
+    }
+
+    image.Avaliable = true;
+
+    if (image.Avaliable == true)
+        m_CurrentImage = image;
+
+    ImageFrame frame = imageLoader->GetImageFrame();
+    m_PicRenderer->UpdateImageFrame(frame);
+
+    return false;
 }
 
 }  //namespace ME

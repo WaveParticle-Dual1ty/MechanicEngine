@@ -1010,6 +1010,16 @@ void VulkanRHI::UpdateDescriptorSets(
     vkUpdateDescriptorSets(m_Device, static_cast<uint32_t>(writeDescSets.size()), writeDescSets.data(), 0, nullptr);
 }
 
+void VulkanRHI::DestroyRHIBuffer(Ref<RHIBuffer> buffer)
+{
+    Ref<VulkanRHIBuffer> vkBuffer = std::dynamic_pointer_cast<VulkanRHIBuffer>(buffer);
+
+    vkFreeMemory(m_Device, vkBuffer->BufferMem, nullptr);
+    vkBuffer->BufferMem = VK_NULL_HANDLE;
+    vkDestroyBuffer(m_Device, vkBuffer->Buffer, nullptr);
+    vkBuffer->Buffer = VK_NULL_HANDLE;
+}
+
 void VulkanRHI::DestroyRHITexture2D(Ref<RHITexture2D> texture)
 {
     Ref<VulkanRHITexture2D> vulkanTexture = std::dynamic_pointer_cast<VulkanRHITexture2D>(texture);

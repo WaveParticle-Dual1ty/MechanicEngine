@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include <cstdint>
+#include <array>
 
 namespace ME
 {
@@ -77,6 +78,19 @@ struct RHIScissor
     int32_t OffsetY;
     uint32_t Width = 0;
     uint32_t Height = 0;
+};
+
+struct RHIVertexBufferP2T2
+{
+    std::array<float, 2> Position = {0, 0};
+    std::array<float, 2> Texcoord = {0, 0};
+};
+
+struct RHIIndexBuffer
+{
+    uint32_t Index1 = 0;
+    uint32_t Index2 = 0;
+    uint32_t Index3 = 0;
 };
 
 }  //namespace ME

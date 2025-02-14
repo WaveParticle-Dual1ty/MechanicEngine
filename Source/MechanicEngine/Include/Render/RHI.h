@@ -70,6 +70,7 @@ public:
         Ref<RHIDescriptorSet> RelateDescriptorSet,
         const std::vector<RHIWriteDescriptorSet>& writesDescSets) = 0;
 
+    virtual void DestroyRHIBuffer(Ref<RHIBuffer> buffer) = 0;
     virtual void DestroyRHITexture2D(Ref<RHITexture2D> texture) = 0;
     virtual void DestroyRHIRenderPass(Ref<RHIRenderPass> renderPass) = 0;
     virtual void DestroyRHIFramebuffer(Ref<RHIFramebuffer> framebuffer) = 0;
