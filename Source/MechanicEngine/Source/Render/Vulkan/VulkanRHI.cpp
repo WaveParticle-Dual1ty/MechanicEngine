@@ -1,4 +1,4 @@
-#include "VulkanRHI.h"
+﻿#include "VulkanRHI.h"
 #include <set>
 #include <array>
 #include <fstream>
@@ -1693,7 +1693,7 @@ VkDevice VulkanRHI::CreateDevice(
         "VK_EXT_extended_dynamic_state2",
         "VK_EXT_extended_dynamic_state3",
     };
-    
+
     std::vector<const char*> enableExtensions;
     for (auto extension : toEnableExtensions)
     {

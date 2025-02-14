@@ -1,6 +1,7 @@
-﻿#include "MechanicEngine/Include/Render/RHI.h"
+﻿#pragma once
 #include <vector>
 #include <cstdint>
+#include "MechanicEngine/Include/Render/RHI.h"
 #include "MechanicEngine/Include/Core/PlatformDetection.h"
 
 #ifdef ME_PLATFORM_WINDOWS
