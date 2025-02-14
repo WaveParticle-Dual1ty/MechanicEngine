@@ -1,11 +1,7 @@
 # Depend Vulkan
 
 if(WIN32)
-    set(VULKAN_PATH $ENV{VK_SDK_PATH})
-    if(NOT EXISTS ${VULKAN_PATH})
-        message(FATAL_ERROR "Please set VULKAN_PATH")
-    endif()
-    message("Vulkan SDK directory = ${VULKAN_PATH}")
+    set(VULKAN_PATH ${PROJ_DEPENDS_DIR}/VulkanSDK/Windows)
 
     set(VULKAN_INCLUDE_DIR ${VULKAN_PATH}/Include)
     set(VULKAN_LIB_DIR ${VULKAN_PATH}/Lib)
@@ -24,6 +20,21 @@ if(WIN32)
         ${VULKAN_LIB_DIR}/spirv-cross-glsl.lib
         ${VULKAN_LIB_DIR}/SDL2.lib
     )
+
+    set(VULKAN_FILE_TO_COPY_DEBUG
+        ${VULKAN_BIN_DIR}/shaderc_sharedd.dll
+    )
+
+    set(VULKAN_FILE_TO_COPY_RELEASE
+        ${VULKAN_BIN_DIR}/shaderc_sharedd.dll
+    )
+
+    set(VULKAN_DESTINATION_DIR_DEBUG "${PROJ_OUTPUT_DIR_DEBUG}")
+    set(VULKAN_DESTINATION_DIR_RELEASE "${PROJ_OUTPUT_DIR_RELEASE}")
+    file(MAKE_DIRECTORY ${VULKAN_DESTINATION_DIR_DEBUG})
+    file(MAKE_DIRECTORY ${VULKAN_DESTINATION_DIR_RELEASE})
+    file(COPY ${VULKAN_FILE_TO_COPY_DEBUG} DESTINATION ${VULKAN_DESTINATION_DIR_DEBUG})
+    file(COPY ${VULKAN_FILE_TO_COPY_RELEASE} DESTINATION ${VULKAN_DESTINATION_DIR_RELEASE})
 elseif(APPLE)
     set(VULKAN_PATH ${PROJ_DEPENDS_DIR}/VulkanSDK/Apple)
     set(VULKAN_INCLUDE_DIR ${VULKAN_PATH}/include)
