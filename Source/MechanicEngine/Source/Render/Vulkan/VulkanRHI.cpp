@@ -1,4 +1,4 @@
-﻿#include "VulkanRHI.h"
+#include "VulkanRHI.h"
 #include <set>
 #include <array>
 #include <fstream>
@@ -1685,7 +1685,7 @@ VkDevice VulkanRHI::CreateDevice(
     std::vector<VkExtensionProperties> deviceProperties(devicePropertiesCnt);
     vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &devicePropertiesCnt, deviceProperties.data());
 
-    std::vector<const char*> enableExtensions = {
+    std::vector<const char*> toEnableExtensions = {
         "VK_KHR_swapchain",
         //"VK_KHR_pipeline_library",
         //"VK_EXT_graphics_pipeline_library",
@@ -1693,14 +1693,14 @@ VkDevice VulkanRHI::CreateDevice(
         "VK_EXT_extended_dynamic_state2",
         "VK_EXT_extended_dynamic_state3",
     };
-
-    for (auto& extension : enableExtensions)
+    
+    std::vector<const char*> enableExtensions;
+    for (auto extension : toEnableExtensions)
     {
-        if (!IsExtensionAvailable(deviceProperties, extension))
-        {
-            RENDER_LOG_ERROR("Not support extension: {}", extension);
-            return VK_NULL_HANDLE;
-        }
+        if (IsExtensionAvailable(deviceProperties, extension))
+            enableExtensions.push_back(extension);
+        else
+            RENDER_LOG_WARN("Not support extension: {}", extension);
     }
 
     RENDER_LOG_INFO("Enable Device Extensions:");
