@@ -93,7 +93,7 @@ bool ImGuiRenderer::ValidTargetColorTextureAndFramebuffer(uint32_t w, uint32_t h
     m_TargetTextures.resize(0);
 
     RHITexture2DCreateDesc texCreateDesc;
-    texCreateDesc.PixelFormat = ERHIPixelFormat::PF_R8G8B8A8_UNORM;
+    texCreateDesc.PixelFormat = m_Format;
     texCreateDesc.Width = w;
     texCreateDesc.Height = h;
     texCreateDesc.NumMips = 1;
