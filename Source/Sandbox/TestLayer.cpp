@@ -69,48 +69,7 @@ void TestLayer::OnUIUpdate()
     {
         ImGui::Begin("Edit");
 
-        //static std::array<float, 4> color = {0, 0, 0, 1};
-        //ImGui::ColorEdit4("Color", color.data());
-
         ImGui::Text("Viewport size: (%.2f, %.2f)", viewportSize.x, viewportSize.y);
-
-        if (ImGui::CollapsingHeader("ColorBlend", ImGuiTreeNodeFlags_DefaultOpen))
-        {
-            const char* blendFactors = {
-                "Zero\0One\0SrcColor\0OneMinusSrcColor\0DstColor\0OneMinusDstColor\0SrcAlpha\0OneMinusSrcAlpha\0"
-                "DstAlpha\0OneMinusDstAlpha\0"};
-            const char* blendOps = {"Add\0Subtract\0ReverseSubtract\0Min\0Max\0"};
-
-            static bool enableColorBlend = true;
-            static int srcColorBlendFactor = 6;
-            static int dstColorBlendFactor = 7;
-            static int colorBlendOp = 0;
-            static int srcAlphaBlendFactor = 6;
-            static int dstAlphaBlendFactor = 8;
-            static int alphaBlendOp = 0;
-
-            ImGui::Checkbox("Enable", &enableColorBlend);
-            ImGui::Combo("SrcColorBlendFactor", &srcColorBlendFactor, blendFactors);
-            ImGui::Combo("DstColorBlendFactor", &dstColorBlendFactor, blendFactors);
-            ImGui::Combo("ColorBlendOp", &colorBlendOp, blendOps);
-            ImGui::Combo("SrcAlphaBlendFactor", &srcAlphaBlendFactor, blendFactors);
-            ImGui::Combo("DstAlphaBlendFactor", &dstAlphaBlendFactor, blendFactors);
-            ImGui::Combo("AlphaBlendOp", &alphaBlendOp, blendOps);
-
-            RHIColorBlendEquation colorBlendEquation;
-            colorBlendEquation.SrcColorBlendFactor = static_cast<RHIBlendFactor>(srcColorBlendFactor);
-            colorBlendEquation.DstColorBlendFactor = static_cast<RHIBlendFactor>(dstColorBlendFactor);
-            colorBlendEquation.ColorBlendOp = static_cast<RHIBlendOp>(colorBlendOp);
-            colorBlendEquation.SrcAlphaBlendFactor = static_cast<RHIBlendFactor>(srcAlphaBlendFactor);
-            colorBlendEquation.DstAlphaBlendFactor = static_cast<RHIBlendFactor>(dstAlphaBlendFactor);
-            colorBlendEquation.AlphaBlendOp = static_cast<RHIBlendOp>(alphaBlendOp);
-
-            RHIColorBlendState colorBlendState;
-            colorBlendState.EnableBlend = enableColorBlend;
-            colorBlendState.ColorBlendEquation = colorBlendEquation;
-
-            m_TestRenderer->SetParamRHIColorBlendState(colorBlendState);
-        }
 
         ImGui::End();
     }

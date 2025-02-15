@@ -12,7 +12,6 @@ public:
     bool Resize(uint32_t w, uint32_t h);
     void Draw(ME::Ref<ME::RHICommandBuffer> cmdBuffer);
     void* GetTargetImTextureID();
-    void SetParamRHIColorBlendState(ME::RHIColorBlendState state);
 
 private:
     bool ValidTargetColorTexture(uint32_t w, uint32_t h);
@@ -50,6 +49,4 @@ private:
     ME::Ref<ME::RHITexture2D> m_Texture;
 
     bool m_UploadTexture = false;
-
-    ME::RHIColorBlendState m_ColorBlendState;
 };

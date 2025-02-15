@@ -191,8 +191,6 @@ enum class RHIDynamicState : uint32_t
     CullMode,
     FrontMode,
     PrimitiveTopology,
-    ColorBlendEnable,
-    ColorBlendEquation,
 };
 
 struct RHIDynamicStatesDesc

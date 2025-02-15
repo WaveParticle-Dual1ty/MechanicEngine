@@ -1689,9 +1689,6 @@ VkDevice VulkanRHI::CreateDevice(
         "VK_KHR_swapchain",
         //"VK_KHR_pipeline_library",
         //"VK_EXT_graphics_pipeline_library",
-        "VK_EXT_extended_dynamic_state",
-        "VK_EXT_extended_dynamic_state2",
-        "VK_EXT_extended_dynamic_state3",
     };
 
     std::vector<const char*> enableExtensions;
@@ -1707,17 +1704,12 @@ VkDevice VulkanRHI::CreateDevice(
     for (auto& extension : enableExtensions)
         RENDER_LOG_INFO("\t{}", extension);
 
-    VkPhysicalDeviceExtendedDynamicState3FeaturesEXT extendedDynamicState3Features = {};
-    extendedDynamicState3Features.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_3_FEATURES_EXT;
-
-    VkPhysicalDeviceFeatures2 supportedFeatures2;
-    supportedFeatures2.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
-    supportedFeatures2.pNext = &extendedDynamicState3Features;
-    vkGetPhysicalDeviceFeatures2(physicalDevice, &supportedFeatures2);
+    VkPhysicalDeviceFeatures supportedFeatures;
+    vkGetPhysicalDeviceFeatures(physicalDevice, &supportedFeatures);
 
     VkDeviceCreateInfo deviceCreateInfo;
     deviceCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-    deviceCreateInfo.pNext = &supportedFeatures2;
+    deviceCreateInfo.pNext = nullptr;
     deviceCreateInfo.flags = 0;
     deviceCreateInfo.queueCreateInfoCount = static_cast<uint32_t>(deviceQueueCreateInfos.size());
     deviceCreateInfo.pQueueCreateInfos = deviceQueueCreateInfos.data();
@@ -1725,7 +1717,7 @@ VkDevice VulkanRHI::CreateDevice(
     deviceCreateInfo.ppEnabledLayerNames = nullptr;
     deviceCreateInfo.enabledExtensionCount = static_cast<uint32_t>(enableExtensions.size());
     deviceCreateInfo.ppEnabledExtensionNames = enableExtensions.data();
-    deviceCreateInfo.pEnabledFeatures = nullptr;
+    deviceCreateInfo.pEnabledFeatures = &supportedFeatures;
 
     VkDevice device = VK_NULL_HANDLE;
     VkResult result = vkCreateDevice(physicalDevice, &deviceCreateInfo, nullptr, &device);

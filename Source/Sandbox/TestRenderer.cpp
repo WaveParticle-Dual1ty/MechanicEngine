@@ -88,9 +88,6 @@ void TestRenderer::Draw(Ref<RHICommandBuffer> cmdBuffer)
 
     m_GraphicPass->BeginPass(cmdBuffer, m_TargetColorTexture, {0.8f, 0.2f, 0.3f, 1.f});
 
-    m_RHI->CmdSetColorBlendEnable(cmdBuffer, 0, m_ColorBlendState.EnableBlend);
-    m_RHI->CmdSetColorBlendEquation(cmdBuffer, 0, m_ColorBlendState.ColorBlendEquation);
-
     m_RHI->CmdBindVertexBuffer(cmdBuffer, m_VertexBuffer);
     m_RHI->CmdBindIndexBuffer(cmdBuffer, m_IndexBuffer);
     m_RHI->CmdBindDescriptorSets(cmdBuffer, m_GraphicPass->GetPipeline(), m_DescriptorSets);
@@ -108,11 +105,6 @@ void TestRenderer::Draw(Ref<RHICommandBuffer> cmdBuffer)
 void* TestRenderer::GetTargetImTextureID()
 {
     return m_TargetImTextureID;
-}
-
-void TestRenderer::SetParamRHIColorBlendState(RHIColorBlendState state)
-{
-    m_ColorBlendState = state;
 }
 
 bool TestRenderer::ValidTargetColorTexture(uint32_t w, uint32_t h)
@@ -294,7 +286,7 @@ bool TestRenderer::CreateGraphicPass()
         {true, RHIBlendFactor::SrcAlpha, RHIBlendFactor::OneMinusSrcAlpha, RHIBlendOp::Add, RHIBlendFactor::SrcAlpha,
          RHIBlendFactor::DstAlpha, RHIBlendOp::Add}
     };
-    pipelineStats.DynamicStatesDesc = {RHIDynamicState::ColorBlendEnable, RHIDynamicState::ColorBlendEquation};
+    //pipelineStats.DynamicStatesDesc = {RHIDynamicState::ColorBlendEnable, RHIDynamicState::ColorBlendEquation};
     //pipelineStats.DynamicStatesDesc = {RHIDynamicState::ColorBlendEnable};
     pipelineStats.DescriptorSets = m_DescriptorSets;
 
