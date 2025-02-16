@@ -15,7 +15,7 @@ public:
     bool Resize(uint32_t w, uint32_t h);
     void Draw(Ref<RHICommandBuffer> cmdBuffer);
     void* GetTargetImTextureID();
-    void UpdateImageFrame(const ImageFrame& frame);
+    void UpdateImageFrame(const ImageInfo& imageInfo, const ImageFrame& frame);
 
 private:
     bool ValidTargetColorTexture(uint32_t w, uint32_t h);

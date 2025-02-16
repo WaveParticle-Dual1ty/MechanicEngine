@@ -227,7 +227,8 @@ bool EditorLayer::OnFileDrop(FileDropEvent& event)
         m_CurrentImage = image;
 
     ImageFrame frame = imageLoader->GetImageFrame();
-    m_PicRenderer->UpdateImageFrame(frame);
+    ImageInfo imageInfo = imageLoader->GetImageInfo();
+    m_PicRenderer->UpdateImageFrame(imageInfo, frame);
 
     return false;
 }

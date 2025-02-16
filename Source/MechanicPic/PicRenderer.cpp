@@ -109,7 +109,7 @@ void* PicRenderer::GetTargetImTextureID()
     return m_TargetImTextureID;
 }
 
-void PicRenderer::UpdateImageFrame(const ImageFrame& frame)
+void PicRenderer::UpdateImageFrame(const ImageInfo& imageInfo, const ImageFrame& frame)
 {
     // todo, now only support rgba
 
@@ -140,12 +140,16 @@ void PicRenderer::UpdateImageFrame(const ImageFrame& frame)
     }
 
     RHITexture2DCreateDesc imageTexCreateDesc;
-    imageTexCreateDesc.PixelFormat = ERHIPixelFormat::PF_B8G8R8A8_UNORM;
-    imageTexCreateDesc.Width = frame.Width;
-    imageTexCreateDesc.Height = frame.Height;
+    if (imageInfo.Format == EMPixelFormat::BGRA32)
+        imageTexCreateDesc.PixelFormat = ERHIPixelFormat::PF_B8G8R8A8_UNORM;
+    else if (imageInfo.Format == EMPixelFormat::BGR24)
+        imageTexCreateDesc.PixelFormat = ERHIPixelFormat::PF_B8G8R8_UNORM;
+    imageTexCreateDesc.Width = imageInfo.Width;
+    imageTexCreateDesc.Height = imageInfo.Height;
     imageTexCreateDesc.NumMips = 1;
     imageTexCreateDesc.NumSamples = 1;
     imageTexCreateDesc.Usage = RHI_TEXTURE_USAGE_TRANSFER_DST_BIT | RHI_TEXTURE_USAGE_SAMPLED_BIT;
+    //imageTexCreateDesc.Usage = RHI_TEXTURE_USAGE_TRANSFER_DST_BIT;
     imageTexCreateDesc.MemoryProperty = 0;
     m_ImageTexture = m_RHI->CreateRHITexture2D(imageTexCreateDesc);
     if (!m_ImageTexture)

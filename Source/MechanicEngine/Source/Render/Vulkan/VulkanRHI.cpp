@@ -383,6 +383,11 @@ Ref<RHITexture2D> VulkanRHI::CreateRHITexture2D(RHITexture2DCreateDesc desc)
     imageCreateInfo.pQueueFamilyIndices = nullptr;
     imageCreateInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 
+    VkImageFormatProperties imageFormatProperties;
+    VkResult ret = vkGetPhysicalDeviceImageFormatProperties(
+        m_PhysicalDevice, imageCreateInfo.format, imageCreateInfo.imageType, imageCreateInfo.tiling,
+        imageCreateInfo.usage, imageCreateInfo.flags, &imageFormatProperties);
+
     VkResult res = vkCreateImage(m_Device, &imageCreateInfo, nullptr, &texture->m_Image);
     if (res != VK_SUCCESS)
     {
