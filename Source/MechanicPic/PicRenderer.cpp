@@ -90,6 +90,12 @@ void PicRenderer::Draw(Ref<RHICommandBuffer> cmdBuffer)
 
         m_GraphicPass->BeginPass(cmdBuffer, m_TargetColorTexture, clearColor);
 
+        ConstantData constantData;
+        constantData.Transform = GetTransformMat(m_ImageTexture, m_TargetColorTexture);
+        m_RHI->CmdPushConstants(
+            cmdBuffer, m_GraphicPass->GetPipeline(), ERHIShaderStage::RHI_SHADER_STAGE_VERTEX_BIT, 0,
+            sizeof(constantData), &constantData);
+
         m_RHI->CmdBindVertexBuffer(cmdBuffer, m_VertexBuffer);
         m_RHI->CmdBindIndexBuffer(cmdBuffer, m_IndexBuffer);
         m_RHI->CmdBindDescriptorSets(cmdBuffer, m_GraphicPass->GetPipeline(), m_DescriptorSets);
@@ -241,10 +247,10 @@ bool PicRenderer::CreateRenderResourece()
 
     // Vertex/Index Buffer
     RHIVertexBufferP2T2 vertexDatas[4] = {
-        { {-0.5, 0.5}, {0, 1}},
-        {  {0.5, 0.5}, {1, 1}},
-        { {0.5, -0.5}, {1, 0}},
-        {{-0.5, -0.5}, {0, 0}},
+        { {-1, 1}, {0, 1}},
+        {  {1, 1}, {1, 1}},
+        { {1, -1}, {1, 0}},
+        {{-1, -1}, {0, 0}},
     };
 
     RHIBufferCreateDesc bufferDesc;
@@ -309,6 +315,13 @@ bool PicRenderer::CreateGraphicPass()
         {ERHIPixelFormat::PF_R8G8B8A8_UNORM, ERHITextureUsage::ColorAttachment}
     };
 
+    // Constant Range
+    std::vector<RHIConstantRange> constantRanges;
+    RHIConstantRange range;
+    range.ShaderStage = ERHIShaderStage::RHI_SHADER_STAGE_VERTEX_BIT;
+    range.Size = sizeof(ConstantData);
+    constantRanges.push_back(range);
+
     // Pipeline Stats
     RHIGraphicPipelineStats pipelineStats;
     pipelineStats.ShaderVS = m_VertexShader;
@@ -322,6 +335,7 @@ bool PicRenderer::CreateGraphicPass()
         {true, RHIBlendFactor::SrcAlpha, RHIBlendFactor::OneMinusSrcAlpha, RHIBlendOp::Add, RHIBlendFactor::SrcAlpha,
          RHIBlendFactor::DstAlpha, RHIBlendOp::Add}
     };
+    pipelineStats.ConstantRanges = constantRanges;
     pipelineStats.DescriptorSets = m_DescriptorSets;
 
     GraphicsPassBuildInfo buildInfo;
@@ -338,6 +352,29 @@ bool PicRenderer::CreateGraphicPass()
     }
 
     return true;
+}
+
+glm::mat4 PicRenderer::GetTransformMat(Ref<RHITexture2D> srcTex, Ref<RHITexture2D> viewportTex)
+{
+    glm::mat4 res = glm::mat4(1.f);
+
+    uint32_t srcW = srcTex->GetWidth();
+    uint32_t srcH = srcTex->GetHeight();
+    uint32_t viewportW = viewportTex->GetWidth();
+    uint32_t viewportH = viewportTex->GetHeight();
+
+    glm::mat4 vertexPosToSrcPosOnViewport = glm::scale(glm::mat4(1.f), glm::vec3(srcW / 2, srcH / 2, 1.f));
+    glm::mat4 viewportToStandard = glm::scale(glm::mat4(1.f), glm::vec3(2.f / viewportW, 2.f / viewportH, 1.f));
+
+    float scaleW = (float)viewportW / srcW;
+    float scaleH = (float)viewportH / srcH;
+    float rateW = (scaleW > 1) ? scaleW : 1.f / scaleW;
+    float rateH = (scaleH > 1) ? scaleH : 1.f / scaleH;
+    float scale = (scaleW > scaleH) ? scaleH : scaleW;
+    glm::mat4 fitSrcToViewport = glm::scale(glm::mat4(1.f), glm::vec3(scale, scale, 1.f));
+
+    res = viewportToStandard * fitSrcToViewport * vertexPosToSrcPosOnViewport;
+    return res;
 }
 
 }  //namespace ME

@@ -2,6 +2,7 @@
 #include "MechanicEngine/Include/Render/RHI.h"
 #include "MechanicEngine/Include/Render/GraphicsPass.h"
 #include "MechanicEngine/Include/Media/ImageStruct.h"
+#include "MechanicEngine/Include/Math/Math.h"
 
 namespace ME
 {
@@ -21,8 +22,14 @@ private:
     bool ValidTargetColorTexture(uint32_t w, uint32_t h);
     bool CreateRenderResourece();
     bool CreateGraphicPass();
+    glm::mat4 GetTransformMat(Ref<RHITexture2D> srcTex, Ref<RHITexture2D> viewportTex);
 
 private:
+    struct ConstantData
+    {
+        glm::mat4x4 Transform;
+    };
+
     Ref<RHI> m_RHI;
     Ref<RHITexture2D> m_TargetColorTexture;
     void* m_TargetImTextureID = nullptr;
