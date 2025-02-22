@@ -132,6 +132,31 @@ void PicRenderer::UpdateImageFrame(const ImageInfo& imageInfo, const ImageFrame&
     bufferDesc.MemoryProperty = RHI_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
     bufferDesc.BufferSize = frame.Datasize[0];
     bufferDesc.Data = frame.Data[0];
+
+    std::vector<uint8_t> tmpFrameData;
+    if (imageInfo.Format == EMPixelFormat::BGR24)
+    {
+        uint32_t size = imageInfo.Width * imageInfo.Height * 4;
+        tmpFrameData.resize(size);
+        uint8_t* srcData = (uint8_t*)frame.Data[0];
+
+        for (uint32_t row = 0; row < imageInfo.Height; ++row)
+        {
+            for (uint32_t col = 0; col < imageInfo.Width; ++col)
+            {
+                uint32_t srcIndex = (col + row * imageInfo.Width) * 3;
+                uint32_t dstIndex = (col + row * imageInfo.Width) * 4;
+                tmpFrameData[dstIndex] = srcData[srcIndex];
+                tmpFrameData[dstIndex + 1] = srcData[srcIndex + 1];
+                tmpFrameData[dstIndex + 2] = srcData[srcIndex + 2];
+                tmpFrameData[dstIndex + 3] = 255;
+            }
+        }
+
+        bufferDesc.BufferSize = size;
+        bufferDesc.Data = tmpFrameData.data();
+    }
+
     m_ImageBuffer = m_RHI->CreateRHIBuffer(bufferDesc);
     if (!m_ImageBuffer)
     {
@@ -143,7 +168,7 @@ void PicRenderer::UpdateImageFrame(const ImageInfo& imageInfo, const ImageFrame&
     if (imageInfo.Format == EMPixelFormat::BGRA32)
         imageTexCreateDesc.PixelFormat = ERHIPixelFormat::PF_B8G8R8A8_UNORM;
     else if (imageInfo.Format == EMPixelFormat::BGR24)
-        imageTexCreateDesc.PixelFormat = ERHIPixelFormat::PF_B8G8R8_UNORM;
+        imageTexCreateDesc.PixelFormat = ERHIPixelFormat::PF_B8G8R8A8_UNORM;
     imageTexCreateDesc.Width = imageInfo.Width;
     imageTexCreateDesc.Height = imageInfo.Height;
     imageTexCreateDesc.NumMips = 1;

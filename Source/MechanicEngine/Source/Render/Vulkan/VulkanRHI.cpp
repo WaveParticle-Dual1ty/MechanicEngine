@@ -365,6 +365,9 @@ Ref<RHITexture2D> VulkanRHI::CreateRHITexture2D(RHITexture2DCreateDesc desc)
     VkFormat format = Util::ConvertERHIPixelFormatToVkFormat(desc.PixelFormat);
     texture->m_VKFormat = format;
 
+    VkFormatProperties formatProperties;
+    vkGetPhysicalDeviceFormatProperties(m_PhysicalDevice, format, &formatProperties);
+
     // create image
     VkImageCreateInfo imageCreateInfo;
     imageCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
