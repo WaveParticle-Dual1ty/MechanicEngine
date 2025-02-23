@@ -2,11 +2,6 @@
 
 layout(location = 0) in vec2 VS_Texcoord;
 
-//layout(push_constant) uniform PushConsts
-//{
-//    vec4 Color;
-//} g_PushConsts;
-
 layout(binding = 0) uniform sampler g_Sampler;
 layout(binding = 1) uniform texture2D g_Texture;
 

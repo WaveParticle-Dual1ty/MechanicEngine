@@ -91,7 +91,7 @@ void PicRenderer::Draw(Ref<RHICommandBuffer> cmdBuffer)
         m_GraphicPass->BeginPass(cmdBuffer, m_TargetColorTexture, clearColor);
 
         ConstantData constantData;
-        constantData.Transform = GetTransformMat(m_ImageTexture, m_TargetColorTexture);
+        constantData.ProjectMat = GetProjectMat(m_ImageTexture, m_TargetColorTexture);
         m_RHI->CmdPushConstants(
             cmdBuffer, m_GraphicPass->GetPipeline(), ERHIShaderStage::RHI_SHADER_STAGE_VERTEX_BIT, 0,
             sizeof(constantData), &constantData);
@@ -354,7 +354,7 @@ bool PicRenderer::CreateGraphicPass()
     return true;
 }
 
-glm::mat4 PicRenderer::GetTransformMat(Ref<RHITexture2D> srcTex, Ref<RHITexture2D> viewportTex)
+glm::mat4 PicRenderer::GetProjectMat(Ref<RHITexture2D> srcTex, Ref<RHITexture2D> viewportTex)
 {
     glm::mat4 res = glm::mat4(1.f);
 
@@ -368,8 +368,6 @@ glm::mat4 PicRenderer::GetTransformMat(Ref<RHITexture2D> srcTex, Ref<RHITexture2
 
     float scaleW = (float)viewportW / srcW;
     float scaleH = (float)viewportH / srcH;
-    float rateW = (scaleW > 1) ? scaleW : 1.f / scaleW;
-    float rateH = (scaleH > 1) ? scaleH : 1.f / scaleH;
     float scale = (scaleW > scaleH) ? scaleH : scaleW;
     glm::mat4 fitSrcToViewport = glm::scale(glm::mat4(1.f), glm::vec3(scale, scale, 1.f));
 

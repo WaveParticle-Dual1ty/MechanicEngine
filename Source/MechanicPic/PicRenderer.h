@@ -22,12 +22,12 @@ private:
     bool ValidTargetColorTexture(uint32_t w, uint32_t h);
     bool CreateRenderResourece();
     bool CreateGraphicPass();
-    glm::mat4 GetTransformMat(Ref<RHITexture2D> srcTex, Ref<RHITexture2D> viewportTex);
+    glm::mat4 GetProjectMat(Ref<RHITexture2D> srcTex, Ref<RHITexture2D> viewportTex);
 
 private:
     struct ConstantData
     {
-        glm::mat4x4 Transform;
+        glm::mat4x4 ProjectMat;
     };
 
     Ref<RHI> m_RHI;
