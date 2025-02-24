@@ -45,6 +45,7 @@ private:
     Ref<GraphicsPass> m_GraphicPass;
 
     bool m_UploadTexture = false;
+    ImageInfo m_ImageInfo;
     Ref<RHIBuffer> m_ImageBuffer;
     Ref<RHITexture2D> m_ImageTexture;
 };

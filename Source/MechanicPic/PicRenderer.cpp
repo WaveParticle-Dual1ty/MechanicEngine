@@ -55,7 +55,7 @@ void PicRenderer::Draw(Ref<RHICommandBuffer> cmdBuffer)
 
     RHIColor clearColor = RHIColor(0.1f, 0.1f, 0.1f, 1.f);
 
-    if (!m_ImageTexture)
+    if (!m_ImageBuffer)
     {
         m_RHI->CmdTransition(
             cmdBuffer, RHITransition(
@@ -78,6 +78,37 @@ void PicRenderer::Draw(Ref<RHICommandBuffer> cmdBuffer)
 
         if (!m_UploadTexture)
         {
+            if (m_ImageTexture)
+            {
+                m_RHI->DestroyRHITexture2D(m_ImageTexture);
+                m_ImageTexture.reset();
+            }
+
+            RHITexture2DCreateDesc imageTexCreateDesc;
+            if (m_ImageInfo.Format == EMPixelFormat::BGRA32)
+                imageTexCreateDesc.PixelFormat = ERHIPixelFormat::PF_B8G8R8A8_UNORM;
+            else if (m_ImageInfo.Format == EMPixelFormat::BGR24)
+                imageTexCreateDesc.PixelFormat = ERHIPixelFormat::PF_B8G8R8A8_UNORM;
+            imageTexCreateDesc.Width = m_ImageInfo.Width;
+            imageTexCreateDesc.Height = m_ImageInfo.Height;
+            imageTexCreateDesc.NumMips = 1;
+            imageTexCreateDesc.NumSamples = 1;
+            imageTexCreateDesc.Usage = RHI_TEXTURE_USAGE_TRANSFER_DST_BIT | RHI_TEXTURE_USAGE_SAMPLED_BIT;
+            //imageTexCreateDesc.Usage = RHI_TEXTURE_USAGE_TRANSFER_DST_BIT;
+            imageTexCreateDesc.MemoryProperty = 0;
+            m_ImageTexture = m_RHI->CreateRHITexture2D(imageTexCreateDesc);
+            if (!m_ImageTexture)
+            {
+                ME_ASSERT(false, "RHI::CreateRHITexture2D fail");
+                return;
+            }
+
+            std::vector<RHIWriteDescriptorSet> writeDescSets = {
+                RHIWriteDescriptorSet(ERHIDescriptorType::RHI_DESCRIPTOR_TYPE_SAMPLER, 0, 0, m_Sampler),
+                RHIWriteDescriptorSet(ERHIDescriptorType::RHI_DESCRIPTOR_TYPE_SAMPLED_IMAGE, 1, 0, m_ImageTexture)};
+
+            m_RHI->UpdateDescriptorSets(m_DescriptorSet, writeDescSets);
+
             m_RHI->CmdCopyBufferToImage(cmdBuffer, m_ImageBuffer, m_ImageTexture);
 
             m_RHI->CmdTransition(
@@ -117,20 +148,13 @@ void* PicRenderer::GetTargetImTextureID()
 
 void PicRenderer::UpdateImageFrame(const ImageInfo& imageInfo, const ImageFrame& frame)
 {
-    // todo, now only support rgba
-
     m_UploadTexture = false;
+    m_ImageInfo = imageInfo;
 
     if (m_ImageBuffer)
     {
         m_RHI->DestroyRHIBuffer(m_ImageBuffer);
         m_ImageBuffer.reset();
-    }
-
-    if (m_ImageTexture)
-    {
-        m_RHI->DestroyRHITexture2D(m_ImageTexture);
-        m_ImageTexture.reset();
     }
 
     RHIBufferCreateDesc bufferDesc;
@@ -169,31 +193,6 @@ void PicRenderer::UpdateImageFrame(const ImageInfo& imageInfo, const ImageFrame&
         ME_ASSERT(false, "RHI::CreateRHIBuffer fail");
         return;
     }
-
-    RHITexture2DCreateDesc imageTexCreateDesc;
-    if (imageInfo.Format == EMPixelFormat::BGRA32)
-        imageTexCreateDesc.PixelFormat = ERHIPixelFormat::PF_B8G8R8A8_UNORM;
-    else if (imageInfo.Format == EMPixelFormat::BGR24)
-        imageTexCreateDesc.PixelFormat = ERHIPixelFormat::PF_B8G8R8A8_UNORM;
-    imageTexCreateDesc.Width = imageInfo.Width;
-    imageTexCreateDesc.Height = imageInfo.Height;
-    imageTexCreateDesc.NumMips = 1;
-    imageTexCreateDesc.NumSamples = 1;
-    imageTexCreateDesc.Usage = RHI_TEXTURE_USAGE_TRANSFER_DST_BIT | RHI_TEXTURE_USAGE_SAMPLED_BIT;
-    //imageTexCreateDesc.Usage = RHI_TEXTURE_USAGE_TRANSFER_DST_BIT;
-    imageTexCreateDesc.MemoryProperty = 0;
-    m_ImageTexture = m_RHI->CreateRHITexture2D(imageTexCreateDesc);
-    if (!m_ImageTexture)
-    {
-        ME_ASSERT(false, "RHI::CreateRHITexture2D fail");
-        return;
-    }
-
-    std::vector<RHIWriteDescriptorSet> writeDescSets = {
-        RHIWriteDescriptorSet(ERHIDescriptorType::RHI_DESCRIPTOR_TYPE_SAMPLER, 0, 0, m_Sampler),
-        RHIWriteDescriptorSet(ERHIDescriptorType::RHI_DESCRIPTOR_TYPE_SAMPLED_IMAGE, 1, 0, m_ImageTexture)};
-
-    m_RHI->UpdateDescriptorSets(m_DescriptorSet, writeDescSets);
 }
 
 bool PicRenderer::ValidTargetColorTexture(uint32_t w, uint32_t h)
