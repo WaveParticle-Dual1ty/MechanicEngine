@@ -20,8 +20,8 @@ public:
 
 private:
     bool ValidTargetColorTexture(uint32_t w, uint32_t h);
-    bool CreateRenderResourece();
-    bool CreateGraphicPass();
+    bool CreatePicRenderResourece();
+    bool CreatePicRenderGraphicPass();
     glm::mat4 GetProjectMat(Ref<RHITexture2D> srcTex, Ref<RHITexture2D> viewportTex);
 
 private:
@@ -34,15 +34,14 @@ private:
     Ref<RHITexture2D> m_TargetColorTexture;
     void* m_TargetImTextureID = nullptr;
 
-    Ref<RHIShader> m_VertexShader;
-    Ref<RHIShader> m_PixelShader;
-    Ref<RHIBuffer> m_VertexBuffer;
-    Ref<RHIBuffer> m_IndexBuffer;
-    Ref<RHIDescriptorSet> m_DescriptorSet;
-    std::vector<Ref<RHIDescriptorSet>> m_DescriptorSets;
-    Ref<RHISampler> m_Sampler;
-
-    Ref<GraphicsPass> m_GraphicPass;
+    Ref<RHIShader> m_PicRenderVS;
+    Ref<RHIShader> m_PicRenderPS;
+    Ref<RHIBuffer> m_PicRenderVertexBuffer;
+    Ref<RHIBuffer> m_PicRenderIndexBuffer;
+    Ref<RHIDescriptorSet> m_PicRenderDescriptorSet;
+    std::vector<Ref<RHIDescriptorSet>> m_PicRenderDescriptorSets;
+    Ref<RHISampler> m_PicRenderSampler;
+    Ref<GraphicsPass> m_PicRenderGraphicPass;
 
     bool m_UploadTexture = false;
     ImageInfo m_ImageInfo;

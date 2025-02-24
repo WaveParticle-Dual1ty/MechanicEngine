@@ -20,17 +20,17 @@ bool PicRenderer::Init(uint32_t w, uint32_t h)
         return false;
     }
 
-    ret = CreateRenderResourece();
+    ret = CreatePicRenderResourece();
     if (!ret)
     {
-        MEPIC_LOG_ERROR("CreateRenderResourece fail");
+        MEPIC_LOG_ERROR("CreatePicRenderResourece fail");
         return false;
     }
 
-    ret = CreateGraphicPass();
+    ret = CreatePicRenderGraphicPass();
     if (!ret)
     {
-        MEPIC_LOG_ERROR("CreateGraphicPass fail");
+        MEPIC_LOG_ERROR("CreatePicRenderGraphicPass fail");
         return false;
     }
 
@@ -104,10 +104,10 @@ void PicRenderer::Draw(Ref<RHICommandBuffer> cmdBuffer)
             }
 
             std::vector<RHIWriteDescriptorSet> writeDescSets = {
-                RHIWriteDescriptorSet(ERHIDescriptorType::RHI_DESCRIPTOR_TYPE_SAMPLER, 0, 0, m_Sampler),
+                RHIWriteDescriptorSet(ERHIDescriptorType::RHI_DESCRIPTOR_TYPE_SAMPLER, 0, 0, m_PicRenderSampler),
                 RHIWriteDescriptorSet(ERHIDescriptorType::RHI_DESCRIPTOR_TYPE_SAMPLED_IMAGE, 1, 0, m_ImageTexture)};
 
-            m_RHI->UpdateDescriptorSets(m_DescriptorSet, writeDescSets);
+            m_RHI->UpdateDescriptorSets(m_PicRenderDescriptorSet, writeDescSets);
 
             m_RHI->CmdCopyBufferToImage(cmdBuffer, m_ImageBuffer, m_ImageTexture);
 
@@ -119,20 +119,20 @@ void PicRenderer::Draw(Ref<RHICommandBuffer> cmdBuffer)
             m_UploadTexture = true;
         }
 
-        m_GraphicPass->BeginPass(cmdBuffer, m_TargetColorTexture, clearColor);
+        m_PicRenderGraphicPass->BeginPass(cmdBuffer, m_TargetColorTexture, clearColor);
 
         ConstantData constantData;
         constantData.ProjectMat = GetProjectMat(m_ImageTexture, m_TargetColorTexture);
         m_RHI->CmdPushConstants(
-            cmdBuffer, m_GraphicPass->GetPipeline(), ERHIShaderStage::RHI_SHADER_STAGE_VERTEX_BIT, 0,
+            cmdBuffer, m_PicRenderGraphicPass->GetPipeline(), ERHIShaderStage::RHI_SHADER_STAGE_VERTEX_BIT, 0,
             sizeof(constantData), &constantData);
 
-        m_RHI->CmdBindVertexBuffer(cmdBuffer, m_VertexBuffer);
-        m_RHI->CmdBindIndexBuffer(cmdBuffer, m_IndexBuffer);
-        m_RHI->CmdBindDescriptorSets(cmdBuffer, m_GraphicPass->GetPipeline(), m_DescriptorSets);
+        m_RHI->CmdBindVertexBuffer(cmdBuffer, m_PicRenderVertexBuffer);
+        m_RHI->CmdBindIndexBuffer(cmdBuffer, m_PicRenderIndexBuffer);
+        m_RHI->CmdBindDescriptorSets(cmdBuffer, m_PicRenderGraphicPass->GetPipeline(), m_PicRenderDescriptorSets);
         m_RHI->CmdDrawIndexed(cmdBuffer, 6, 1, 0, 0, 0);
 
-        m_GraphicPass->EndPass(cmdBuffer);
+        m_PicRenderGraphicPass->EndPass(cmdBuffer);
 
         m_RHI->CmdTransition(
             cmdBuffer, RHITransition(
@@ -229,7 +229,7 @@ bool PicRenderer::ValidTargetColorTexture(uint32_t w, uint32_t h)
     return true;
 }
 
-bool PicRenderer::CreateRenderResourece()
+bool PicRenderer::CreatePicRenderResourece()
 {
     // shaders
     const std::string resPath = Application::Get().GetResourcePath();
@@ -237,12 +237,12 @@ bool PicRenderer::CreateRenderResourece()
     shaderCreateInfo.Type = ERHIShaderType::Vertex;
     shaderCreateInfo.ShaderFile = resPath + "/Shaders/PicRender.vert";
     shaderCreateInfo.EntryName = "main";
-    m_VertexShader = m_RHI->CreateRHIShader(shaderCreateInfo);
+    m_PicRenderVS = m_RHI->CreateRHIShader(shaderCreateInfo);
 
     shaderCreateInfo.Type = ERHIShaderType::Pixel;
     shaderCreateInfo.ShaderFile = resPath + "/Shaders/PicRender.frag";
     shaderCreateInfo.EntryName = "main";
-    m_PixelShader = m_RHI->CreateRHIShader(shaderCreateInfo);
+    m_PicRenderPS = m_RHI->CreateRHIShader(shaderCreateInfo);
 
     // Vertex/Index Buffer
     RHIVertexBufferP2T2 vertexDatas[4] = {
@@ -257,8 +257,8 @@ bool PicRenderer::CreateRenderResourece()
     bufferDesc.MemoryProperty = RHI_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
     bufferDesc.BufferSize = sizeof(vertexDatas);
     bufferDesc.Data = vertexDatas;
-    m_VertexBuffer = m_RHI->CreateRHIBuffer(bufferDesc);
-    if (!m_VertexBuffer)
+    m_PicRenderVertexBuffer = m_RHI->CreateRHIBuffer(bufferDesc);
+    if (!m_PicRenderVertexBuffer)
     {
         MEPIC_LOG_ERROR("RHI::CreateRHIBuffer fail");
         return false;
@@ -273,8 +273,8 @@ bool PicRenderer::CreateRenderResourece()
     bufferDesc.MemoryProperty = RHI_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
     bufferDesc.BufferSize = sizeof(indexData);
     bufferDesc.Data = indexData;
-    m_IndexBuffer = m_RHI->CreateRHIBuffer(bufferDesc);
-    if (!m_IndexBuffer)
+    m_PicRenderIndexBuffer = m_RHI->CreateRHIBuffer(bufferDesc);
+    if (!m_PicRenderIndexBuffer)
     {
         MEPIC_LOG_ERROR("RHI::CreateRHIBuffer fail");
         return false;
@@ -286,19 +286,19 @@ bool PicRenderer::CreateRenderResourece()
         {1, ERHIDescriptorType::RHI_DESCRIPTOR_TYPE_SAMPLED_IMAGE, 1, RHI_SHADER_STAGE_FRAGMENT_BIT}
     };
 
-    m_DescriptorSet = m_RHI->CreateRHIDescriptorSet(descSetCreateInfo);
-    if (!m_DescriptorSet)
+    m_PicRenderDescriptorSet = m_RHI->CreateRHIDescriptorSet(descSetCreateInfo);
+    if (!m_PicRenderDescriptorSet)
     {
         MEPIC_LOG_ERROR("RHI::CreateRHIDescriptorSet fail");
         return false;
     }
 
-    m_DescriptorSets = {m_DescriptorSet};
+    m_PicRenderDescriptorSets = {m_PicRenderDescriptorSet};
 
     // Sampler
     RHISamplerCreateInfo samplerInfo;
-    m_Sampler = m_RHI->CreateRHISampler(samplerInfo);
-    if (!m_Sampler)
+    m_PicRenderSampler = m_RHI->CreateRHISampler(samplerInfo);
+    if (!m_PicRenderSampler)
     {
         MEPIC_LOG_ERROR("RHI::CreateRHISampler fail");
         return false;
@@ -307,7 +307,7 @@ bool PicRenderer::CreateRenderResourece()
     return true;
 }
 
-bool PicRenderer::CreateGraphicPass()
+bool PicRenderer::CreatePicRenderGraphicPass()
 {
     // render pass desc
     RHIRenderPassCreateDesc renderPassDesc = {
@@ -323,8 +323,8 @@ bool PicRenderer::CreateGraphicPass()
 
     // Pipeline Stats
     RHIGraphicPipelineStats pipelineStats;
-    pipelineStats.ShaderVS = m_VertexShader;
-    pipelineStats.ShaderPS = m_PixelShader;
+    pipelineStats.ShaderVS = m_PicRenderVS;
+    pipelineStats.ShaderPS = m_PicRenderPS;
     pipelineStats.VertexInputLayout = {
         {"InPosition", ERHIShaderDataType::Float2, 0},
         {"InTexcoord", ERHIShaderDataType::Float2, 1}
@@ -335,15 +335,15 @@ bool PicRenderer::CreateGraphicPass()
          RHIBlendFactor::DstAlpha, RHIBlendOp::Add}
     };
     pipelineStats.ConstantRanges = constantRanges;
-    pipelineStats.DescriptorSets = m_DescriptorSets;
+    pipelineStats.DescriptorSets = m_PicRenderDescriptorSets;
 
     GraphicsPassBuildInfo buildInfo;
     buildInfo.Name = "PicRenderPass";
     buildInfo.RenderPassDesc = renderPassDesc;
     buildInfo.PipelineStats = pipelineStats;
 
-    m_GraphicPass = CreateRef<GraphicsPass>(m_RHI);
-    bool ret = m_GraphicPass->BuildGraphicsPass(buildInfo);
+    m_PicRenderGraphicPass = CreateRef<GraphicsPass>(m_RHI);
+    bool ret = m_PicRenderGraphicPass->BuildGraphicsPass(buildInfo);
     if (!ret)
     {
         MEPIC_LOG_ERROR("GraphicsPass::BuildGraphicsPass fail");
